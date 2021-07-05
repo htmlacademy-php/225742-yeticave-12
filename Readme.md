@@ -1,7 +1,7 @@
 # Личный проект «YetiCave»
 
 * Студент: [Михаил Данюшин](https://up.htmlacademy.ru/php/12/user/225742).
-* Наставник: `Неизвестно`.
+* Наставник: [Антон Попов](https://htmlacademy.ru/profile/id78239).
 
 ---
 
