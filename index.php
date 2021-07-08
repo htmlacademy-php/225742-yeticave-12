@@ -16,7 +16,9 @@ $items = [
     ['name' => 'Ботинки для сноуборда DC Mutiny Charocal', 'cat' => $cats['boots'], 'cost' => 10999, 'img_url' => 'img/lot-4.jpg'],
     ['name' => 'Куртка для сноуборда DC Mutiny Charocal', 'cat' => $cats['clothing'], 'cost' => 7500, 'img_url' => 'img/lot-5.jpg'],
     ['name' => 'Маска Oakley Canopy', 'cat' => $cats['other'], 'cost' => 5400, 'img_url'=>'img/lot-6.jpg']
-];  // укажите здесь ваше имя
+];
+
+require('functions.php');
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -90,7 +92,7 @@ $items = [
                         <h3 class="lot__title"><a class="text-link" href="pages/lot.html"><?= $item['name']; ?></a></h3>                            <div class="lot__state">
                         <div class="lot__rate">
                         <span class="lot__amount">Стартовая цена</span>
-                        <span class="lot__cost"><?= $item['cost']; ?><b class="rub">р</b></span>
+                        <span class="lot__cost"><?= getCost($item['cost']); ?></span>
                     </div>
                     <div class="lot__timer timer">
                         12:23
