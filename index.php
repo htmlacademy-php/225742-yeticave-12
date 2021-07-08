@@ -2,7 +2,13 @@
 $is_auth = rand(0, 1);
 
 $user_name = 'Михаил Данюшин';
-$cats = ['boards' => 'Доски и лыжи', 'attachment' => 'Крепления', 'boots' => 'Ботинки', 'clothing' => 'Одежда', 'tools' => 'Инструменты', 'other' => 'Разное'];
+$cats = ['boards' => 'Доски и лыжи',
+         'attachment' => 'Крепления',
+         'boots' => 'Ботинки',
+         'clothing' => 'Одежда',
+         'tools' => 'Инструменты',
+         'other' => 'Разное'];
+
 $items = [
     ['name' => '2014 Rossignol District Snowboard', 'cat' => $cats['boards'], 'cost' => 10999, 'img_url' => 'img/lot-1.jpg'],
     ['name' => 'DC Ply Mens 2016/2017 Snowboard', 'cat' => $cats['boards'], 'cost' => 159999, 'img_url' => 'img/lot-2.jpg'],
@@ -62,9 +68,9 @@ $items = [
         <h2 class="promo__title">Нужен стафф для катки?</h2>
         <p class="promo__text">На нашем интернет-аукционе ты найдёшь самое эксклюзивное сноубордическое и горнолыжное снаряжение.</p>
         <ul class="promo__list">
-        <?php foreach ($cats as $cat => $val): ?>
-             <li class="promo__item promo__item--<?= $cat; ?>">
-                <a class="promo__link" href="pages/all-lots.html"><?= $val; ?></a>
+        <?php foreach ($cats as $modifier => $category_name): ?>
+             <li class="promo__item promo__item--<?= $modifier; ?>">
+                <a class="promo__link" href="pages/all-lots.html"><?= $category_name; ?></a>
             </li>
         <?php endforeach; ?><!--заполните этот список из массива категорий-->
         </ul>
@@ -99,9 +105,9 @@ $items = [
 <footer class="main-footer">
     <nav class="nav">
         <ul class="nav__list container">
-        <?php foreach ($cats as $cat): ?>
+        <?php foreach ($cats as $category): ?>
              <li class="nav__item">
-                <a href="pages/all-lots.html"><?= $cat; ?></a>
+                <a href="pages/all-lots.html"><?= $category; ?></a>
             </li>
         <?php endforeach; ?>
         </ul>
