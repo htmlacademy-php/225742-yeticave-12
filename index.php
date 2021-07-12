@@ -1,13 +1,6 @@
 <?php
 $is_auth =  rand(0, 1);
 $user_name = 'Михаил Данюшин';
-$cats = ['boards' => 'Доски и лыжи',
-         'attachment' => 'Крепления',
-         'boots' => 'Ботинки',
-         'clothing' => 'Одежда',
-         'tools' => 'Инструменты',
-         'other' => 'Разное'];
-
 $title = 'YetiCave || Главная';
 $cats = ['boards' => 'Доски и лыжи',
          'attachment' => 'Крепления',
