@@ -10,12 +10,12 @@ $cats = ['boards' => 'Доски и лыжи',
          'other' => 'Разное'];
 
 $items = [
-            ['name' => '2014 Rossignol District Snowboard', 'cat' => $cats['boards'], 'cost' => 10999, 'img_url' => 'img/lot-1.jpg'],
-            ['name' => 'DC Ply Mens 2016/2017 Snowboard', 'cat' => $cats['boards'], 'cost' => 159999, 'img_url' => 'img/lot-2.jpg'],
-            ['name' => 'Крепления Union Contact Pro 2015 года размер L/XL', 'cat' => $cats['attachment'], 'cost' => 8000, 'img_url' => 'img/lot-3.jpg'],
-            ['name' => 'Ботинки для сноуборда DC Mutiny Charocal', 'cat' => $cats['boots'], 'cost' => 10999, 'img_url' => 'img/lot-4.jpg'],
-            ['name' => 'Куртка для сноуборда DC Mutiny Charocal', 'cat' => $cats['clothing'], 'cost' => 7500, 'img_url' => 'img/lot-5.jpg'],
-            ['name' => 'Маска Oakley Canopy', 'cat' => $cats['other'], 'cost' => 5400, 'img_url'=>'img/lot-6.jpg']
+            ['name' => '2014 Rossignol District Snowboard', 'cat' => $cats['boards'], 'cost' => 10999, 'img_url' => 'img/lot-1.jpg', 'date' => '2021-08-01'],
+            ['name' => 'DC Ply Mens 2016/2017 Snowboard', 'cat' => $cats['boards'], 'cost' => 159999, 'img_url' => 'img/lot-2.jpg', 'date' => '2021-07-25'],
+            ['name' => 'Крепления Union Contact Pro 2015 года размер L/XL', 'cat' => $cats['attachment'], 'cost' => 8000, 'img_url' => 'img/lot-3.jpg', 'date' => '2021-08-02'],
+            ['name' => 'Ботинки для сноуборда DC Mutiny Charocal', 'cat' => $cats['boots'], 'cost' => 10999, 'img_url' => 'img/lot-4.jpg', 'date' => '2021-08-10'],
+            ['name' => 'Куртка для сноуборда DC Mutiny Charocal', 'cat' => $cats['clothing'], 'cost' => 7500, 'img_url' => 'img/lot-5.jpg', 'date' => '2021-07-19'],
+            ['name' => 'Маска Oakley Canopy', 'cat' => $cats['other'], 'cost' => 5400, 'img_url'=>'img/lot-6.jpg', 'date' => '2021-08-01']
         ];
 
 require_once('helpers.php');
