@@ -27,9 +27,15 @@
                             <span class="lot__amount">Стартовая цена</span>
                             <span class="lot__cost"><?= htmlspecialchars(getCost($item['cost'])); ?></span>
                         </div>
-                        <div class="lot__timer timer">
-                            12:23
-                        </div>
+                        <? if (getTimeInHours($item['date'])['hours'] <= 1) : ?> {
+                            <div class="lot__timer timer timer--finishing">
+                                <?= implode(': ', getTimeInHours($item['date'])); ?>
+                            </div>
+                        <?php else: ?>
+                            <div class="lot__timer timer">
+                                <?= implode(': ', getTimeInHours($item['date'])); ?>
+                            </div>
+                        <?php endif ?>
                     </div>
                 </div>
             </li>
