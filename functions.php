@@ -5,10 +5,12 @@
  * @return string Итоговый формат цены в виде строки
  */
 function get_cost($number) {
-    if ($number > 1000) {
+    if (ceil($number) > 1000) {
         $cost = number_format($number, 0, '', ' ');
+        return (string)$cost . ' ₽';
+    } else {
+        return ceil($number);
     }
-    return (string)$cost . ' ₽';
 }
 
 /**

@@ -130,7 +130,7 @@ function include_template($name, array $data = []) {
     $name = 'templates/' . $name;
 
     if (!is_readable($name)) {
-        return $result = '';
+        return '';
     }
 
     ob_start();
