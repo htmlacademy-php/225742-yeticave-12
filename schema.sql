@@ -12,16 +12,16 @@ CREATE TABLE categories (
 
 CREATE TABLE lots (
   id                      INT AUTO_INCREMENT PRIMARY KEY,
-	creation_date           TIMESTAMP,
+	creation_date           TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   lot_name                VARCHAR(100),
   lot_description         TEXT,
   img_link                VARCHAR(100) UNIQUE,
   start_cost              INT,
-  termination_date        TIMESTAMP,
+  termination_date        DATETIME,
   step                    INT,
   author_id               INT,
   winner                  INT,
-  category                INT
+  category_id             INT
 );
 
 CREATE TABLE bets (
@@ -30,15 +30,14 @@ CREATE TABLE bets (
   amount                  INT,
   lot_id                  INT,
   author_id               INT,
-  INDEX(amount)
 );
 
 CREATE TABLE users (
   id                      INT AUTO_INCREMENT PRIMARY KEY,
-  registration_date       TIMESTAMP,
+  registration_date       DATETIME,
   email                   VARCHAR(100),
   name                    VARCHAR(100),
-  user_password           VARCHAR(75),
+  user_password           VARCHAR(100),
   contact                 VARCHAR(150),
   INDEX (name),
   UNIQUE INDEX (email)
