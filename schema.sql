@@ -21,7 +21,7 @@ CREATE TABLE lots (
   step                    INT,
   author_id               INT,
   winner                  INT,
-  category_code           VARCHAR(50)
+  category_id             INT
 );
 
 CREATE TABLE bets (

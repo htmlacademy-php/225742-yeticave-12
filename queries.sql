@@ -21,12 +21,12 @@ INSERT INTO users SET registration_date = '2020-05-13 16:32:01', email = 'kaifol
  Добавляет данные - лоты
  */
 
-INSERT INTO lots SET lot_name = '2014 Rossignol District Snowboard', lot_description = 'Описание отсутствует..', img_link = 'img/lot-1.jpg', category_code = 'boards', creation_date = '2021-04-16 12:54:34', termination_date = '2021-08-01 15:00:00', start_cost = 10999, step = 500, author_id = 1 ;
-INSERT INTO lots SET lot_name = 'DC Ply Mens 2016/2017 Snowboard', lot_description = 'Описание отсутствует..', img_link = 'img/lot-2.jpg', category_code = 'boards', creation_date = '2021-05-06 17:24:24', termination_date = '2021-09-10 21:00:00', start_cost = 159999, step = 1000, author_id = 2 ;
-INSERT INTO lots SET lot_name = 'Крепления Union Contact Pro 2015 года размер L/XL', lot_description = 'Описание отсутствует..', img_link = 'img/lot-3.jpg', category_code = 'attachment', creation_date = '2021-07-01 07:40:24', termination_date = '2021-09-03 15:00:00', start_cost = 8000, step = 550, author_id = 3 ;
-INSERT INTO lots SET lot_name = 'Ботинки для сноуборда DC Mutiny Charocal', lot_description = 'Описание отсутствует..', img_link = 'img/lot-4.jpg', category_code = 'boots', creation_date = '2021-07-25 16:14:04', termination_date = '2021-09-01 10:00:00', start_cost = 10999, step = 750, author_id = 3 ;
-INSERT INTO lots SET lot_name = 'Куртка для сноуборда DC Mutiny Charocal', lot_description = 'Описание отсутствует..', img_link = 'img/lot-5.jpg', category_code = 'clothing', creation_date = '2021-06-12 19:04:54', termination_date = '2021-09-05 09:00:00', start_cost = 7500, step = 250, author_id = 2 ;
-INSERT INTO lots SET lot_name = 'Маска Oakley Canopy', lot_description = 'Описание отсутствует..', img_link = 'img/lot-6.jpg', category_code = 'other', creation_date = '2021-07-19 09:20:30', termination_date = '2021-09-01 12:00:00', start_cost = 5400, step = 250, author_id = 1 ;
+INSERT INTO lots SET lot_name = '2014 Rossignol District Snowboard', lot_description = 'Описание отсутствует..', img_link = 'img/lot-1.jpg', category_id = 1, creation_date = '2021-04-16 12:54:34', termination_date = '2021-08-01 15:00:00', start_cost = 10999, step = 500, author_id = 1 ;
+INSERT INTO lots SET lot_name = 'DC Ply Mens 2016/2017 Snowboard', lot_description = 'Описание отсутствует..', img_link = 'img/lot-2.jpg', category_id = 1, creation_date = '2021-05-06 17:24:24', termination_date = '2021-09-10 21:00:00', start_cost = 159999, step = 1000, author_id = 2 ;
+INSERT INTO lots SET lot_name = 'Крепления Union Contact Pro 2015 года размер L/XL', lot_description = 'Описание отсутствует..', img_link = 'img/lot-3.jpg', category_id = 2, creation_date = '2021-07-01 07:40:24', termination_date = '2021-09-03 15:00:00', start_cost = 8000, step = 550, author_id = 3 ;
+INSERT INTO lots SET lot_name = 'Ботинки для сноуборда DC Mutiny Charocal', lot_description = 'Описание отсутствует..', img_link = 'img/lot-4.jpg', category_id = 3, creation_date = '2021-07-25 16:14:04', termination_date = '2021-09-01 10:00:00', start_cost = 10999, step = 750, author_id = 3 ;
+INSERT INTO lots SET lot_name = 'Куртка для сноуборда DC Mutiny Charocal', lot_description = 'Описание отсутствует..', img_link = 'img/lot-5.jpg', category_id = 4, creation_date = '2021-06-12 19:04:54', termination_date = '2021-09-05 09:00:00', start_cost = 7500, step = 250, author_id = 2 ;
+INSERT INTO lots SET lot_name = 'Маска Oakley Canopy', lot_description = 'Описание отсутствует..', img_link = 'img/lot-6.jpg', category_id = 6, creation_date = '2021-07-19 09:20:30', termination_date = '2021-09-01 12:00:00', start_cost = 5400, step = 250, author_id = 1 ;
 
 /**
  Добавляет данные - ставки
@@ -38,11 +38,11 @@ INSERT INTO bets SET creation_date = '2021-07-19 15:16:43', amount = 89500, lot_
 
 SELECT category_code, category from categories; /* Выбирает все категории */
 
-SELECT lot_name, lot_description, start_cost, img_link, category_code FROM lots WHERE winner IS NULL ORDER BY creation_date DESC; /* Выбирает все лоты, которые открыты от свежих к старым*/
+SELECT lot_name, lot_description, start_cost, img_link, category_id FROM lots WHERE winner IS NULL ORDER BY creation_date DESC; /* Выбирает все лоты, которые открыты от свежих к старым*/
 
-SELECT * FROM lots JOIN categories ON lots.category_code = categories.category_code WHERE lots.id = 2; /* Показывает лот с id = 2 а также его категорию. */
+SELECT * FROM lots JOIN categories ON lots.category_id = categories.id WHERE lots.id = 2; /* Показывает лот с id = 2 а также его категорию. */
 
-UPDATE lots SET lot_name = 'NEW ITEM' WHERE lot_id = 5; /* Обновляет название лота по его id */
+UPDATE lots SET lot_name = 'NEW ITEM' WHERE id = 5; /* Обновляет название лота по его id */
 
 SELECT * FROM bets WHERE lot_id = 2 ORDER BY creation_date DESC;
 
