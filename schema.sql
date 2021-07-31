@@ -29,7 +29,7 @@ CREATE TABLE bets (
   creation_date           DATETIME,
   amount                  INT,
   lot_id                  INT,
-  author_id               INT,
+  author_id               INT
 );
 
 CREATE TABLE users (
