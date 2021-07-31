@@ -40,7 +40,7 @@ SELECT category_code, category from categories; /* Выбирает все ка�
 
 SELECT lot_name, lot_description, start_cost, img_link, category_id FROM lots WHERE winner IS NULL ORDER BY creation_date DESC; /* Выбирает все лоты, которые открыты от свежих к старым*/
 
-SELECT * FROM lots JOIN categories ON lots.category_id = categories.id WHERE lots.id = 2; /* Показывает лот с id = 2 а также его категорию. */
+SELECT l.* , category_code FROM lots l JOIN categories c ON l.category_id = c.id WHERE l.id = 2; /* Показывает лот с id = 2 а также его категорию. */
 
 UPDATE lots SET lot_name = 'NEW ITEM' WHERE id = 5; /* Обновляет название лота по его id */
 
