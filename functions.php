@@ -41,3 +41,25 @@ function get_data($con, $query)
         return $data = mysqli_fetch_all($result, MYSQLI_ASSOC);
     }
 };
+
+/**
+ * Запрашивает массив с категориями и возвращает его
+ * @param boolean Ресурс соединения
+ * @return array Массив с полученными данными
+ */
+function get_cats($con)
+{
+    $cats_query = 'SELECT code, category FROM categories';
+    return get_data($con, $cats_query);
+}
+
+/**
+ * Запрашивает массив с лотами и возвращает его
+ * @param boolean Ресурс соединения
+ * @return array Массив с полученными данными
+ */
+function get_lots($con)
+{
+    $lots_query = 'SELECT name, description, start_cost, img_link, termination_date,  category FROM lots JOIN categories ON category_id = categories.id';
+    return get_data($con, $lots_query);
+}

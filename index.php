@@ -5,14 +5,11 @@ require_once('functions.php');
 $con = mysqli_connect('127.0.0.1', 'root', '', 'yeticave');
 mysqli_set_charset($con, 'utf-8');
 
-$cats_query = 'SELECT code, category FROM categories';
-$lots_query = 'SELECT name, description, start_cost, img_link, termination_date, category_id FROM lots';
-
 if (!$con) {
     print('Ошибка подключения: ' . mysqli_connect_error());
 } else {
-    $cats = get_data($con, $cats_query);
-    $lots = get_data($con, $lots_query);
+    $cats = get_cats($con);
+    $lots = get_lots($con);
 }
 
 $is_auth =  rand(0, 1);
