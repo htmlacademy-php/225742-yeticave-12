@@ -1,0 +1,10 @@
+<?php
+
+$con_params = [
+    'host' => '127.0.0.1',
+    'user' => 'root',
+    'password' => '',
+    'db_name' => 'yeticave'
+];
+
+return $con_params;
