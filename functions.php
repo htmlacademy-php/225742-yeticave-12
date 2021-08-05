@@ -81,3 +81,4 @@ function get_lots()
     $lots_query = 'SELECT name, description, start_cost, img_link, termination_date,  category FROM lots JOIN categories ON category_id = categories.id';
     return get_data($lots_query);
 }
+?>

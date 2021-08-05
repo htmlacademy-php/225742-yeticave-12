@@ -21,7 +21,8 @@
         <?php if ($lots == null) : ?> {
             <p> Данные не получены</p>
             }
-            <?php else : foreach ($lots as $lot) : ?>
+        <?php else : ?>
+            <?php foreach ($lots as $lot) : ?>
                 <li class="lots__item lot">
                     <div class="lot__image">
                         <img src="<?= htmlspecialchars($lot['img_link']); ?>" width="350" height="260" alt="<?= htmlspecialchars($lot['name']); ?>">
@@ -34,7 +35,7 @@
                                 <span class="lot__amount">Стартовая цена</span>
                                 <span class="lot__cost"><?= htmlspecialchars(get_cost($lot['start_cost'])); ?></span>
                             </div>
-                            <? if (get_time_in_hours($lot['termination_date'])['hours'] <= 1) : ?>
+                            <?php if (get_time_in_hours($lot['termination_date'])['hours'] <= 1) : ?>
                                 <div class="lot__timer timer timer--finishing">
                                     <?= implode(': ', get_time_in_hours($lot['termination_date'])); ?>
                                 </div>

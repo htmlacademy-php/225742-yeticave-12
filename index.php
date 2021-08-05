@@ -11,5 +11,7 @@ $user_name = 'Михаил Данюшин';
 $title = 'YetiCave || Главная';
 
 $content = include_template('main.php', ['cats' => $cats, 'lots' => $lots]);
-$layout_content = include_template('layout.php', ['content' => $content, 'title' => $title, 'user_name' => $user_name, 'cats' => $cats]);
+$layout_content = include_template('layout.php', ['is_auth' => $is_auth, 'content' => $content, 'title' => $title, 'user_name' => $user_name, 'cats' => $cats]);
 print($layout_content);
+
+?>
