@@ -11,3 +11,4 @@ uploads/*
 !uploads/.gitkeep
 .vscode/
 php.exe
+connection_params.php

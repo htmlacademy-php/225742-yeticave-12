@@ -1,27 +1,17 @@
 <?php
-$is_auth =  rand(0, 1);
-$user_name = 'Михаил Данюшин';
-$title = 'YetiCave || Главная';
-$cats = ['boards' => 'Доски и лыжи',
-         'attachment' => 'Крепления',
-         'boots' => 'Ботинки',
-         'clothing' => 'Одежда',
-         'tools' => 'Инструменты',
-         'other' => 'Разное'];
-
-$items = [
-            ['name' => '2014 Rossignol District Snowboard', 'cat' => $cats['boards'], 'cost' => 10999, 'img_url' => 'img/lot-1.jpg', 'date' => '2021-08-01'],
-            ['name' => 'DC Ply Mens 2016/2017 Snowboard', 'cat' => $cats['boards'], 'cost' => 159999, 'img_url' => 'img/lot-2.jpg', 'date' => '2021-07-25'],
-            ['name' => 'Крепления Union Contact Pro 2015 года размер L/XL', 'cat' => $cats['attachment'], 'cost' => 8000, 'img_url' => 'img/lot-3.jpg', 'date' => '2021-08-02'],
-            ['name' => 'Ботинки для сноуборда DC Mutiny Charocal', 'cat' => $cats['boots'], 'cost' => 10999, 'img_url' => 'img/lot-4.jpg', 'date' => '2021-08-10'],
-            ['name' => 'Куртка для сноуборда DC Mutiny Charocal', 'cat' => $cats['clothing'], 'cost' => 7500, 'img_url' => 'img/lot-5.jpg', 'date' => '2021-07-19'],
-            ['name' => 'Маска Oakley Canopy', 'cat' => $cats['other'], 'cost' => 5400, 'img_url'=>'img/lot-6.jpg', 'date' => '2021-08-01']
-        ];
 
 require_once('helpers.php');
 require_once('functions.php');
 
-$content = include_template('main.php', ['cats' => $cats, 'items' => $items]);
-$layout_content = include_template('layout.php', ['content' => $content, 'title' => $title, 'user_name' => $user_name, 'cats' => $cats]);
+$cats = get_cats();
+$lots = get_lots();
+
+$is_auth =  rand(0, 1);
+$user_name = 'Михаил Данюшин';
+$title = 'YetiCave || Главная';
+
+$content = include_template('main.php', ['cats' => $cats, 'lots' => $lots]);
+$layout_content = include_template('layout.php', ['is_auth' => $is_auth, 'content' => $content, 'title' => $title, 'user_name' => $user_name, 'cats' => $cats]);
 print($layout_content);
+
 ?>
