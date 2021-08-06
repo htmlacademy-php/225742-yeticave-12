@@ -39,49 +39,73 @@ function set_connection()
 }
 
 /**
- * Запрашивает данные из БД и возвращает их в виде массива
+ * Проверяет результат выполнения запроса
+ * @param boolean Ресурс соединения
  * @param string Строка-запрос в БД
- * @param boolean Флаг запроса единственной записи (по умолчанию запрашиваем множество)
- * @return array Массив с полученными данными
+ * @return boolean Флаг удачного/неудачного выполнения запроса
  */
-function get_data($query, $is_one = false)
-{
-    $con = set_connection();
-    $data = null;
-    $result = mysqli_query($con, $query);
 
+function check_con_result($con, $query) {
+    $result = mysqli_query($con, $query);
     if (!$result) {
         $error = mysqli_error($con);
         print('Ошибка SQL: ' . $error);
-        $data = null;
-    } else if ($is_one) {
-        $data = mysqli_fetch_assoc($result);
+        return false;
     } else {
+        return $result;
+    }
+}
+
+/**
+ * Запрашивает данные из БД и возвращает их в виде двумерного массива
+ * @param boolean Ресурс соединения
+ * @param string Строка-запрос в БД
+ * @return array Массив с полученными данными
+ */
+function get_data($con, $query)
+{
+    $data = null;
+    $result = check_con_result($con, $query);
+    if ($result) {
         $data = mysqli_fetch_all($result, MYSQLI_ASSOC);
     }
     return $data;
 };
+/**
+ * Запрашивает данные одной строки из БД и возвращает ассоциативный массив
+ * @param boolean Ресурс соединения
+ * @param string Строка-апрос в БД
+ * @return array Массив с полученными данными
+ */
+function get_data_item($con, $query) {
+    $data = null;
+    $result = check_con_result($con, $query);
+    if ($result) {
+        $data = mysqli_fetch_assoc($result);
+    }
+    return $data;
+}
 
 /**
  * Запрашивает массив с категориями и возвращает его
  * @param boolean Ресурс соединения
  * @return array Массив с полученными данными
  */
-function get_cats()
+function get_cats($con)
 {
     $cats_query = 'SELECT code, category FROM categories';
-    return get_data($cats_query);
+    return get_data($con, $cats_query);
 }
 
 /**
  * Запрашивает массив с лотами и возвращает его
  * @return array Массив с полученными данными
  */
-function get_lots()
+function get_lots($con)
 {
     $lots_query = 'SELECT l.id, name, description, start_cost, img_link, termination_date, category FROM lots l JOIN categories ON category_id = categories.id WHERE termination_date > STR_TO_DATE(now(), "%Y-%m-%d")';
 
-    return get_data($lots_query);
+    return get_data($con, $lots_query);
 }
 
 /**
@@ -89,9 +113,9 @@ function get_lots()
  * @param int ID лота
  * @return array Массив с полученными данными
  */
-function get_lot($id)
+function get_lot($con, $id)
 {
     $lot_query = 'SELECT name, description, start_cost, img_link, termination_date, category, step FROM lots l JOIN categories ON category_id = categories.id WHERE l.id = ' . $id ;
-    return get_data($lot_query, true);
+    return get_data_item($con, $lot_query);
 }
 ?>

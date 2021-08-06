@@ -5,11 +5,12 @@ require_once('functions.php');
 
 $is_auth =  rand(0, 1);
 $user_name = 'Михаил Данюшин';
+$con = set_connection();
 
-$cats = get_cats();
+$cats = get_cats($con);
 
 if (isset($_GET['id']) && !empty($_GET['id'])) {
-    $lot = get_lot($_GET['id']);
+    $lot = get_lot($con, intval($_GET['id']));
     $content = include_template('lot-info.php', ['cats' => $cats, 'lot' => $lot]);
     $title = 'YetiCave || ' . $lot['name'] . '';
 } else {
