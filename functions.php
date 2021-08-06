@@ -40,11 +40,11 @@ function set_connection()
 
 /**
  * Запрашивает данные из БД и возвращает их в виде массива
- * @param boolean Ресурс соединения
  * @param string Строка-запрос в БД
+ * @param boolean Флаг запроса единственной записи (по умолчанию запрашиваем множество)
  * @return array Массив с полученными данными
  */
-function get_data($query)
+function get_data($query, $is_one = false)
 {
     $con = set_connection();
     $data = null;
@@ -54,6 +54,8 @@ function get_data($query)
         $error = mysqli_error($con);
         print('Ошибка SQL: ' . $error);
         $data = null;
+    } else if ($is_one) {
+        $data = mysqli_fetch_assoc($result);
     } else {
         $data = mysqli_fetch_all($result, MYSQLI_ASSOC);
     }
@@ -73,12 +75,23 @@ function get_cats()
 
 /**
  * Запрашивает массив с лотами и возвращает его
- * @param boolean Ресурс соединения
  * @return array Массив с полученными данными
  */
 function get_lots()
 {
-    $lots_query = 'SELECT name, description, start_cost, img_link, termination_date,  category FROM lots JOIN categories ON category_id = categories.id';
+    $lots_query = 'SELECT l.id, name, description, start_cost, img_link, termination_date, category FROM lots l JOIN categories ON category_id = categories.id WHERE termination_date > STR_TO_DATE(now(), "%Y-%m-%d")';
+
     return get_data($lots_query);
+}
+
+/**
+ * Запрашивает данные лота по его id
+ * @param int ID лота
+ * @return array Массив с полученными данными
+ */
+function get_lot($id)
+{
+    $lot_query = 'SELECT name, description, start_cost, img_link, termination_date, category, step FROM lots l JOIN categories ON category_id = categories.id WHERE l.id = ' . $id ;
+    return get_data($lot_query, true);
 }
 ?>
