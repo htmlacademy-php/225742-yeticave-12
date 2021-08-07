@@ -115,7 +115,7 @@ function get_lots($con)
  */
 function get_lot($con, $id)
 {
-    $lot_query = 'SELECT name, description, start_cost, img_link, termination_date, category, step FROM lots l JOIN categories ON category_id = categories.id WHERE l.id = ' . $id ;
+    $lot_query = 'SELECT name, description, start_cost, img_link, termination_date, category, step FROM lots l JOIN categories ON category_id = categories.id WHERE l.id = ' . intval($id);
     return get_data_item($con, $lot_query);
 }
 ?>
