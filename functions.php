@@ -25,7 +25,7 @@ function get_time_in_hours($date)
 }
 
 
-function set_connection()
+function get_connection()
 {
     $params = require('connection_params.php');
     $con = mysqli_connect($params['host'], $params['user'], $params['password'], $params['db_name']);
@@ -55,6 +55,11 @@ function check_con_result($con, $query) {
         return $result;
     }
 }
+
+// function check_lot_exists($con, $item) {
+//     $query = 'SELECT '
+//     $result = check_con_result($con, $query);
+// }
 
 /**
  * Запрашивает данные из БД и возвращает их в виде двумерного массива
@@ -93,7 +98,11 @@ function get_data_item($con, $query) {
  */
 function get_cats($con)
 {
-    $cats_query = 'SELECT code, category FROM categories';
+    $cats_query = '
+    SELECT
+        code,
+        category
+    FROM categories';
     return get_data($con, $cats_query);
 }
 
@@ -103,7 +112,18 @@ function get_cats($con)
  */
 function get_lots($con)
 {
-    $lots_query = 'SELECT l.id, name, description, start_cost, img_link, termination_date, category FROM lots l JOIN categories ON category_id = categories.id WHERE termination_date > STR_TO_DATE(now(), "%Y-%m-%d")';
+    $lots_query = '
+    SELECT
+        l.id,
+        name,
+        description,
+        start_cost,
+        img_link,
+        termination_date,
+        category
+    FROM lots l
+        JOIN categories ON category_id = categories.id
+    WHERE termination_date > STR_TO_DATE(now(), "%Y-%m-%d")';
 
     return get_data($con, $lots_query);
 }
@@ -115,7 +135,17 @@ function get_lots($con)
  */
 function get_lot($con, $id)
 {
-    $lot_query = 'SELECT name, description, start_cost, img_link, termination_date, category, step FROM lots l JOIN categories ON category_id = categories.id WHERE l.id = ' . intval($id);
+    $lot_query = '
+    SELECT
+        name,
+        description,
+        start_cost,
+        img_link,
+        termination_date,
+        category,
+        step
+    FROM lots l
+        JOIN categories ON category_id = categories.id
+    WHERE l.id = ' . intval($id);
     return get_data_item($con, $lot_query);
 }
-?>
