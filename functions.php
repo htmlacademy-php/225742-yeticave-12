@@ -51,7 +51,7 @@ function check_con_result($con, $query) {
         print('Ошибка SQL: ' . $error);
         return false;
     }
-        return $result;
+    return $result;
 }
 
 // function check_lot_exists($con, $item) {
@@ -149,22 +149,11 @@ function get_lot($con, $id)
 }
 
 /**
- * Проверяет поле названия лота
- * @param string Поле имени
+ * Проверяет поле на наличие значения
+ * @param string Поле
  * @return string Сообщение об ошибке
  */
-function validate_name($field) {
-    if (empty($_POST[$field])) {
-        return 'Поле не заполнено';
-    }
-}
-
-/**
- * Проверяет поле описания лота
- * @param string Поле описания
- * @return string Сообщение об ошибке
- */
-function validate_message($field) {
+function check_required_field($field) {
     if (empty($_POST[$field])) {
         return 'Поле не заполнено';
     }
@@ -234,7 +223,7 @@ function validate_date($field) {
     if (!is_date_valid($_POST[$field])) {
         return 'Введите дату в формате ДД:ММ:ГГ';
     }
-    if (strtotime($_POST[$field]) - time() + 3600 * 24 < 0) {
+    if (strtotime($_POST[$field]) - time() < 0) {
         return 'Торги должны длиться минимум 24 часа';
     }
 
@@ -248,11 +237,11 @@ function validate_form () {
     $errors = [];
     $rules = [
         'lot-name' => function() {
-            return validate_name('lot-name');
+            return check_required_field('lot-name');
         },
 
         'message' => function() {
-            return validate_message('message');
+            return check_required_field('message');
         },
 
         'lot-image' =>  function() {
@@ -296,7 +285,8 @@ function validate_form () {
  * @param string Поле файла
  */
 function move_file($file) {
-    $file_name = $file['name'];
+    $file_ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+    $file_name = md5(microtime()) . '.' . $file_ext;
     $file_path = __DIR__ . '/uploads/';
     $file_url = '/uploads/' . $file_name;
     move_uploaded_file($file['tmp_name'], $file_path . $file_name);
@@ -305,21 +295,23 @@ function move_file($file) {
 
 function add_new_lot($con, $data) {
     $lot_name = $data['lot-name'];
+    $category = $data['category'];
     $description = $data['message'];
-    $lot_rate = settype($data['lot-rate'], 'integer');
-    $lot_step = settype($data['lot-step'], 'integer');
+    $lot_rate = (int)$data['lot-rate'];
+    $lot_step = (int)$data['lot-step'];
     $lot_date = $data['lot-date'];
     $lot_image = move_file($_FILES['lot-image']);
-
-    $lot_query = "
-    INSERT INTO lots (name, description, start_cost, step, termination_date, img_link) VALUES ('$lot_name', '$description', $lot_rate, $lot_step, '$lot_date', '$lot_image')";
-
-    $result = mysqli_query($con, $lot_query);
+    $sql = 'INSERT INTO lots (name, category, description, start_cost, step, termination_date, img_link) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, 'sisiiss', $lot_name, $category, $description, $lot_rate, $lot_step, $lot_date, $lot_image);
+    $result = mysqli_stmt_execute($stmt);
 
     if (!$result) {
         $error = mysqli_error($con);
         print("Ошибка MySQL: " . $error);
     }
+    $last_id = mysqli_insert_id($con);
+    echo $last_id;
 }
 
 /**
