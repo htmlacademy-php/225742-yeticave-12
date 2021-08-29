@@ -6,6 +6,9 @@
     <title><?= $title; ?></title>
     <link href="../css/normalize.min.css" rel="stylesheet">
     <link href="../css/style.css" rel="stylesheet">
+    <?php if ($is_need_flatpickr) :?>
+        <link href="../css/flatpickr.min.css" rel="stylesheet">
+    <?php endif; ?>
 </head>
 
 <body>
@@ -21,7 +24,7 @@
                     <input type="search" name="search" placeholder="Поиск лота">
                     <input class="main-header__search-btn" type="submit" name="find" value="Найти">
                 </form>
-                <a class="main-header__add-lot button" href="pages/add-lot.html">Добавить лот</a>
+                <a class="main-header__add-lot button" href="add.php">Добавить лот</a>
 
                 <nav class="user-menu">
 
