@@ -14,7 +14,7 @@
                 <p>Данные не получены</p>
             <?php else :?>
                 <?php foreach($cats as $cat) :?>
-                    <option value="<?=$cat['code'];?>"><?=$cat['category'];?></option>
+                    <option value="<?=$cat['id'];?>"><?=$cat['category'];?></option>
                 <?php endforeach;?>
             <?php endif;?>
           </select>

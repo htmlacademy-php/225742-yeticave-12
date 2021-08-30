@@ -10,21 +10,18 @@ $is_need_flatpickr = true;
 $con = get_connection();
 
 $cats = get_cats($con);
-foreach ($cats as $cat => $val) {
-    echo $cat;
-}
 
 $content_data = ['cats' => $cats];
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $errors = validate_form($_POST, $_FILES);
-    echo $_POST['category'];
     if (!empty($errors)) {
         $content_data['errors'] = $errors;
     } else {
-        $success_url = 'lot.php';
         add_new_lot($con, $_POST);
+        $success_url = 'lot.php?id=' . mysqli_insert_id($con);
+        header('Location:' . $success_url);
         }
 };
 

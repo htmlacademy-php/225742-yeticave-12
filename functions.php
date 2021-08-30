@@ -99,7 +99,8 @@ function get_cats($con)
     $cats_query = '
     SELECT
         code,
-        category
+        category,
+        id
     FROM categories';
     return get_data($con, $cats_query);
 }
@@ -295,13 +296,13 @@ function move_file($file) {
 
 function add_new_lot($con, $data) {
     $lot_name = $data['lot-name'];
-    $category = $data['category'];
+    $category = (int)$data['category'];
     $description = $data['message'];
     $lot_rate = (int)$data['lot-rate'];
     $lot_step = (int)$data['lot-step'];
     $lot_date = $data['lot-date'];
     $lot_image = move_file($_FILES['lot-image']);
-    $sql = 'INSERT INTO lots (name, category, description, start_cost, step, termination_date, img_link) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    $sql = 'INSERT INTO lots (name, category_id, description, start_cost, step, termination_date, img_link) VALUES (?, ?, ?, ?, ?, ?, ?)';
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, 'sisiiss', $lot_name, $category, $description, $lot_rate, $lot_step, $lot_date, $lot_image);
     $result = mysqli_stmt_execute($stmt);
@@ -310,8 +311,6 @@ function add_new_lot($con, $data) {
         $error = mysqli_error($con);
         print("Ошибка MySQL: " . $error);
     }
-    $last_id = mysqli_insert_id($con);
-    echo $last_id;
 }
 
 /**
