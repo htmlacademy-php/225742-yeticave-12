@@ -191,6 +191,10 @@ function validate_rate($field) {
         return 'Поле не заполнено';
     }
 
+    if (preg_match("/[А-Яа-яA-Za-z]/", $_POST[$field]) ) {
+        return 'Поле не должно содержать буквы';
+    }
+
     if ($_POST[$field] <= 0) {
         return 'Цена должна быть больше ноля';
     }
@@ -204,6 +208,10 @@ function validate_rate($field) {
 function validate_step($field) {
     if (strlen($_POST[$field]) == 0) {
         return 'Поле не заполнено';
+    }
+
+    if (preg_match("/[А-Яа-яA-Za-z]/", $_POST[$field]) ) {
+        return 'Поле не должно содержать буквы';
     }
 
     if ($_POST[$field] <= 0 || is_float($_POST[$field])) {

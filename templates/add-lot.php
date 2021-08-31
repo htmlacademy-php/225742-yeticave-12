@@ -24,7 +24,7 @@
       </div>
       <div class="form__item form__item--wide <?php if ($errors['message']) : ?> form__item--invalid <?php endif;?>">
         <label for="message">Описание <sup>*</sup></label>
-        <textarea id="message" name="message" placeholder="Напишите описание лота" require></textarea>
+        <textarea id="message" name="message" placeholder="Напишите описание лота" require><?=get_post_val('message'); ?></textarea>
         <span class="form__error"><?php if ($errors['message']) : ?><?php echo $errors['message'] ?></span>
             <?php endif; ?>
       </div>
