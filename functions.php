@@ -191,8 +191,8 @@ function validate_rate($field) {
         return 'Поле не заполнено';
     }
 
-    if (preg_match("/[А-Яа-яA-Za-z]/", $_POST[$field]) ) {
-        return 'Поле не должно содержать буквы';
+    if (!filter_input(INPUT_POST, $field, FILTER_VALIDATE_INT)) {
+        return 'Поле должно содержать только цифры';
     }
 
     if ($_POST[$field] <= 0) {
@@ -210,8 +210,8 @@ function validate_step($field) {
         return 'Поле не заполнено';
     }
 
-    if (preg_match("/[А-Яа-яA-Za-z]/", $_POST[$field]) ) {
-        return 'Поле не должно содержать буквы';
+    if (!filter_input(INPUT_POST, $field, FILTER_VALIDATE_INT)) {
+        return 'Поле должно содержать только цифры';
     }
 
     if ($_POST[$field] <= 0 || is_float($_POST[$field])) {
