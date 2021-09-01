@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Форматирует цену лота в карточке
  * @param int Цена лота в числовом значении
@@ -51,9 +50,8 @@ function check_con_result($con, $query) {
         $error = mysqli_error($con);
         print('Ошибка SQL: ' . $error);
         return false;
-    } else {
-        return $result;
     }
+    return $result;
 }
 
 // function check_lot_exists($con, $item) {
@@ -101,7 +99,8 @@ function get_cats($con)
     $cats_query = '
     SELECT
         code,
-        category
+        category,
+        id
     FROM categories';
     return get_data($con, $cats_query);
 }
@@ -148,4 +147,169 @@ function get_lot($con, $id)
         JOIN categories ON category_id = categories.id
     WHERE l.id = ' . intval($id);
     return get_data_item($con, $lot_query);
+}
+
+/**
+ * Проверяет поле на наличие значения
+ * @param string Поле
+ * @return string Сообщение об ошибке
+ */
+function check_required_field($field) {
+    if (empty($_POST[$field])) {
+        return 'Поле не заполнено';
+    }
+}
+
+/**
+ * Проверяет поле загрузки файла
+ * @param string Поле загрузки файла
+ * @return string Сообщение об ошибке
+ */
+function validate_image($image) {
+    if ($_FILES[$image]['error'] == 4) {
+       return 'Добавьте изображение лота';
+    }
+
+    $image_name = $_FILES[$image]['tmp_name'];
+
+    if ($image_name) {
+        $image_mime = mime_content_type($image_name);
+
+        if ($image_mime !== 'image/jpeg' && $image_mime !== 'image/png') {
+            return "Файл должен быть в формате jpeg или png";
+        }
+    }
+}
+
+/**
+ * Проверяет поле начальной цены
+ * @param string Поле начальной цены
+ * @return string Сообщение об ошибке
+ */
+function validate_num($field) {
+    $validated_field = filter_input(INPUT_POST, $field, FILTER_VALIDATE_INT);
+
+    if (is_null($validated_field)) {
+        return 'Поле не заполнено';
+    }
+
+    if ($validated_field === 0) {
+        return 'Поле должно содержать значение больше ноля';
+    }
+
+    if ($validated_field === false) {
+        return 'Следует использовать только цифры';
+    }
+}
+
+
+/**
+ * Проверяет поле даты окончания торгов
+ * @param string Поле даты
+ * @return string Сообщение об ошибке
+ */
+function validate_date($field) {
+    if (empty($_POST[$field])) {
+        return 'Поле не заполнено';
+    }
+
+    if (!is_date_valid($_POST[$field])) {
+        return 'Введите дату в формате ДД:ММ:ГГ';
+    }
+    if (strtotime($_POST[$field]) - time() < 0) {
+        return 'Торги должны длиться минимум 24 часа';
+    }
+
+}
+
+/**
+ * Осуществляет валидацию формы
+ * @return array Массив с сообщениями об ошибках
+ */
+function validate_form () {
+    $errors = [];
+    $rules = [
+        'lot-name' => function() {
+            return check_required_field('lot-name');
+        },
+
+        'message' => function() {
+            return check_required_field('message');
+        },
+
+        'lot-image' =>  function() {
+            return validate_image('lot-image');
+        },
+
+        'lot-rate' =>  function() {
+            return validate_num('lot-rate');
+        },
+
+        'lot-step' =>  function() {
+            return validate_num('lot-step');
+        },
+
+        'lot-date' =>  function() {
+            return validate_date('lot-date');
+        }
+    ];
+
+    foreach ($_POST as $key => $value) {
+        if (isset($rules[$key])) {
+            $rule = $rules[$key];
+            $errors[$key] = $rule();
+        }
+    }
+
+    foreach ($_FILES as $key => $value) {
+        if (isset($rules[$key])) {
+            $rule = $rules[$key];
+            $errors[$key] = $rule();
+        }
+    }
+
+
+    return array_filter($errors);
+
+}
+
+/**
+ * Перемещает загруженное изображение в директорию проекта
+ * @param string Поле файла
+ */
+function move_file($file) {
+    $file_ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+    $file_name = md5(microtime()) . '.' . $file_ext;
+    $file_path = __DIR__ . '/uploads/';
+    $file_url = '/uploads/' . $file_name;
+    move_uploaded_file($file['tmp_name'], $file_path . $file_name);
+    return $file_url;
+}
+
+function add_new_lot($con, $data) {
+    $lot_name = $data['lot-name'];
+    $category = (int)$data['category'];
+    $description = $data['message'];
+    $lot_rate = (int)$data['lot-rate'];
+    $lot_step = (int)$data['lot-step'];
+    $lot_date = $data['lot-date'];
+    $lot_image = move_file($_FILES['lot-image']);
+    $sql = 'INSERT INTO lots (name, category_id, description, start_cost, step, termination_date, img_link) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, 'sisiiss', $lot_name, $category, $description, $lot_rate, $lot_step, $lot_date, $lot_image);
+    $result = mysqli_stmt_execute($stmt);
+
+    if (!$result) {
+        $error = mysqli_error($con);
+        print("Ошибка MySQL: " . $error);
+    }
+}
+
+/**
+ * Возвращает значение поля формы после валидации
+ * @param string Поле формы
+ * @return string Значение поля
+ */
+function get_post_val($key) {
+    return $_POST[$key] ?? '';
 }

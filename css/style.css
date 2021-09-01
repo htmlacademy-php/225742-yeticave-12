@@ -864,6 +864,12 @@ input:invalid .form__error{
   display: block;
 }
 
+.form__item--invalid  .form__error--image {
+  display: inline-block;
+  margin-left: 15px;
+}
+
+
 .form__item--invalid textarea,
 .form__item--invalid input {
   background: #ffffff url("../img/error.svg") 97% 11px no-repeat;
@@ -910,7 +916,7 @@ input:invalid .form__error{
   cursor: pointer;
 }
 
-.form__input-file:hover label {
+.form__input-file label:hover  {
   background-color: #45abde;
   color: #fff;
 }
