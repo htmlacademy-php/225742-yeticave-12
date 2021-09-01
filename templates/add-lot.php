@@ -14,7 +14,11 @@
                 <p>Данные не получены</p>
             <?php else :?>
                 <?php foreach($cats as $cat) :?>
+                    <?php if ($cat['id'] == get_post_val('category')) :?>
+                        <option selected value="<?=$cat['id'];?>"><?=$cat['category'];?></option>
+                    <?php endif;?>
                     <option value="<?=$cat['id'];?>"><?=$cat['category'];?></option>
+
                 <?php endforeach;?>
             <?php endif;?>
           </select>
