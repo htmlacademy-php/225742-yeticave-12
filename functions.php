@@ -186,38 +186,22 @@ function validate_image($image) {
  * @param string Поле начальной цены
  * @return string Сообщение об ошибке
  */
-function validate_rate($field) {
-    if (strlen($_POST[$field]) == 0) {
+function validate_num($field) {
+    $validated_field = filter_input(INPUT_POST, $field, FILTER_VALIDATE_INT);
+
+    if (is_null($validated_field)) {
         return 'Поле не заполнено';
     }
 
-    if (!filter_input(INPUT_POST, $field, FILTER_VALIDATE_INT)) {
-        return 'Поле должно содержать только цифры';
+    if ($validated_field === 0) {
+        return 'Поле должно содержать значение больше ноля';
     }
 
-    if ($_POST[$field] <= 0) {
-        return 'Цена должна быть больше ноля';
+    if ($validated_field === false) {
+        return 'Следует использовать только цифры';
     }
 }
 
-/**
- * Проверяет поле шага ставки
- * @param string Поле шага ставки
- * @return string Сообщение об ошибке
- */
-function validate_step($field) {
-    if (strlen($_POST[$field]) == 0) {
-        return 'Поле не заполнено';
-    }
-
-    if (!filter_input(INPUT_POST, $field, FILTER_VALIDATE_INT)) {
-        return 'Поле должно содержать только цифры';
-    }
-
-    if ($_POST[$field] <= 0 || is_float($_POST[$field])) {
-        return 'Шаг ставки должен быть целым числом больше ноля';
-    }
-}
 
 /**
  * Проверяет поле даты окончания торгов
@@ -258,11 +242,11 @@ function validate_form () {
         },
 
         'lot-rate' =>  function() {
-            return validate_rate('lot-rate');
+            return validate_num('lot-rate');
         },
 
         'lot-step' =>  function() {
-            return validate_step('lot-step');
+            return validate_num('lot-step');
         },
 
         'lot-date' =>  function() {
