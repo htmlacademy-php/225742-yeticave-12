@@ -2,6 +2,7 @@
 
 require_once('helpers.php');
 require_once('functions.php');
+require_once('validation_helpers.php');
 
 $is_auth = 1; //Временно
 $user_name = 'Михаил Данюшин';
