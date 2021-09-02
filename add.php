@@ -15,7 +15,7 @@ $content_data = ['cats' => $cats];
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $errors = validate_form($_POST, $_FILES);
+    $errors = validate_form();
     if (!empty($errors)) {
         $content_data['errors'] = $errors;
     } else {

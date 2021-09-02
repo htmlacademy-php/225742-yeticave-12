@@ -1,3 +1,4 @@
+<main>
 <form class="form form--add-lot container<?php if ($errors) :?> form--invalid <?php endif;?>" action="add.php" method="POST" enctype="multipart/form-data">
       <h2>Добавление лота</h2>
       <div class="form__container-two">
@@ -18,7 +19,6 @@
                         <option selected value="<?=$cat['id'];?>"><?=$cat['category'];?></option>
                     <?php endif;?>
                     <option value="<?=$cat['id'];?>"><?=$cat['category'];?></option>
-
                 <?php endforeach;?>
             <?php endif;?>
           </select>
@@ -66,3 +66,4 @@
       <span class="form__error form__error--bottom">Пожалуйста, исправьте ошибки в форме.</span>
       <button type="submit" class="button">Добавить лот</button>
     </form>
+</main>

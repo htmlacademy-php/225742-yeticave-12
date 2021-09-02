@@ -166,7 +166,7 @@ function check_required_field($field) {
  * @return string Сообщение об ошибке
  */
 function validate_image($image) {
-    if ($_FILES[$image]['error'] == 4) {
+    if ($_FILES[$image]['error'] === 4) {
        return 'Добавьте изображение лота';
     }
 
@@ -187,11 +187,11 @@ function validate_image($image) {
  * @return string Сообщение об ошибке
  */
 function validate_num($field) {
-    $validated_field = filter_input(INPUT_POST, $field, FILTER_VALIDATE_INT);
-
-    if (is_null($validated_field)) {
+    if (empty($_POST[$field])) {
         return 'Поле не заполнено';
     }
+
+    $validated_field = filter_input(INPUT_POST, $field, FILTER_VALIDATE_INT);
 
     if ($validated_field === 0) {
         return 'Поле должно содержать значение больше ноля';
@@ -216,19 +216,76 @@ function validate_date($field) {
     if (!is_date_valid($_POST[$field])) {
         return 'Введите дату в формате ДД:ММ:ГГ';
     }
+
     if (strtotime($_POST[$field]) - time() < 0) {
         return 'Торги должны длиться минимум 24 часа';
     }
+}
 
+function check_existing_email($email, $con) {
+    $query = 'SELECT * from users WHERE email = "' . $email .  '" LIMIT 1';
+    $is_exist = false;
+    if (get_data_item($con, $query)) {
+        $is_exist = true;
+    }
+    return $is_exist;
+}
+
+function validate_email($con, $field) {
+    if (empty($_POST[$field])) {
+        return 'Поле не заполнено';
+    }
+
+    $validated_email = filter_input(INPUT_POST, $field, FILTER_VALIDATE_EMAIL);
+
+    if ($validated_email === false) {
+        return 'Пожалуйста, введите корректный e-mail';
+    }
+
+    if (check_existing_email($validated_email, $con)) {
+        return 'Указанный вами адрес электроннной почты уже занят';
+    }
+}
+
+function validate_password($field) {
+    if (empty($_POST[$field])) {
+        return 'Поле не заполнено';
+    }
+
+    if (strlen($_POST[$field]) < 8) {
+        return 'Поле должно содержать минимум 8 символов';
+    }
+}
+
+function validate_name($field) {
+    if (empty($_POST[$field])) {
+        return 'Поле не заполнено';
+    }
+
+    if (!preg_match('/[A-zА-яё-]/', $_POST[$field])) {
+        return 'Используйте только буквы';
+    }
 }
 
 /**
  * Осуществляет валидацию формы
  * @return array Массив с сообщениями об ошибках
  */
-function validate_form () {
+function validate_form($con) {
     $errors = [];
     $rules = [
+        'email' => function($con) {
+            return validate_email($con, 'email');
+        },
+
+        'password' => function() {
+            return validate_password('password');
+        },
+
+        'name' => function() {
+            return validate_name('name');
+        },
+
         'lot-name' => function() {
             return check_required_field('lot-name');
         },
@@ -257,20 +314,11 @@ function validate_form () {
     foreach ($_POST as $key => $value) {
         if (isset($rules[$key])) {
             $rule = $rules[$key];
-            $errors[$key] = $rule();
+            $errors[$key] = $rule($con);
         }
     }
-
-    foreach ($_FILES as $key => $value) {
-        if (isset($rules[$key])) {
-            $rule = $rules[$key];
-            $errors[$key] = $rule();
-        }
-    }
-
 
     return array_filter($errors);
-
 }
 
 /**
