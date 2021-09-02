@@ -16,6 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (!empty($errors)) {
         $content_data['errors'] = $errors;
+    } else if (save_user_data($con)) {
+        header('Location: pages/login.html'); //Временно
     }
 }
 

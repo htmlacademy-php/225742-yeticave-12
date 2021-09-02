@@ -18,8 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $errors = validate_form();
     if (!empty($errors)) {
         $content_data['errors'] = $errors;
-    } else {
-        add_new_lot($con, $_POST);
+    } else if (add_new_lot($con, $_POST)) {
         $success_url = 'lot.php?id=' . mysqli_insert_id($con);
         header('Location:' . $success_url);
         }

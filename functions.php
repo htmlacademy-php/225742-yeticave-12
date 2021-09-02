@@ -350,7 +350,10 @@ function add_new_lot($con, $data) {
     if (!$result) {
         $error = mysqli_error($con);
         print("Ошибка MySQL: " . $error);
+        return false;
     }
+
+    return $result
 }
 
 /**
@@ -360,4 +363,25 @@ function add_new_lot($con, $data) {
  */
 function get_post_val($key) {
     return $_POST[$key] ?? '';
+}
+
+function save_user_data($con) {
+    $date = date('Y-m-d H:i:s');
+    $email = $_POST['email'];
+    $name = $_POST['name'];
+    $password  = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $contact = $_POST['message'];
+
+    $query = 'INSERT INTO users (registration_date, email, name, password, contact) VALUES (?, ?, ?, ?, ?)';
+    $stmt = mysqli_prepare($con, $query);
+    mysqli_stmt_bind_param($stmt, 'sssss', $date, $email, $name, $password, $contact);
+    $result = mysqli_stmt_execute($stmt);
+
+    if (!$result) {
+        $error = mysqli_error($con);
+        print("Ошибка MySQL: " . $error);
+        return false;
+    }
+
+    return $result;
 }

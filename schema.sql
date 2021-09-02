@@ -37,7 +37,7 @@ CREATE TABLE users (
   registration_date       DATETIME,
   email                   VARCHAR(100),
   name                    VARCHAR(100),
-  password           VARCHAR(100),
+  password                VARCHAR(100),
   contact                 VARCHAR(150),
   INDEX (name),
   UNIQUE INDEX (email)
