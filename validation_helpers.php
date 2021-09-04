@@ -16,11 +16,12 @@ function check_required_field($field) {
  * @return string Сообщение об ошибке
  */
 function validate_image($image) {
-    if ($_FILES[$image]['error'] === 4) {
+    $image = $_FILES[$image];
+    if ($image['error'] === 4) {
        return 'Добавьте изображение лота';
     }
 
-    $image_name = $_FILES[$image]['tmp_name'];
+    $image_name = $image['tmp_name'];
 
     if ($image_name) {
         $image_mime = mime_content_type($image_name);
@@ -37,11 +38,11 @@ function validate_image($image) {
  * @return string Сообщение об ошибке
  */
 function validate_num($field) {
-    if (empty($_POST[$field])) {
+    $validated_field = filter_input(INPUT_POST, $field, FILTER_VALIDATE_INT);
+
+    if (empty($validated_field)) {
         return 'Поле не заполнено';
     }
-
-    $validated_field = filter_input(INPUT_POST, $field, FILTER_VALIDATE_INT);
 
     if ($validated_field === 0) {
         return 'Поле должно содержать значение больше ноля';
@@ -58,15 +59,16 @@ function validate_num($field) {
  * @return string Сообщение об ошибке
  */
 function validate_date($field) {
-    if (empty($_POST[$field])) {
+    $date = $_POST[$field];
+    if (empty($date)) {
         return 'Поле не заполнено';
     }
 
-    if (!is_date_valid($_POST[$field])) {
+    if (!is_date_valid($date)) {
         return 'Введите дату в формате ДД:ММ:ГГ';
     }
 
-    if (strtotime($_POST[$field]) - time() < 0) {
+    if (strtotime($date) - time() < 0) {
         return 'Торги должны длиться минимум 24 часа';
     }
 }
@@ -93,11 +95,11 @@ function check_existing_email($email, $con) {
  * @return string Сообщение об ошибке
  */
 function validate_email($con, $field) {
-    if (empty($_POST[$field])) {
+    $validated_email = filter_input(INPUT_POST, $field, FILTER_VALIDATE_EMAIL);
+
+    if (empty($validated_email)) {
         return 'Поле не заполнено';
     }
-
-    $validated_email = filter_input(INPUT_POST, $field, FILTER_VALIDATE_EMAIL);
 
     if ($validated_email === false) {
         return 'Пожалуйста, введите корректный e-mail';
@@ -114,11 +116,12 @@ function validate_email($con, $field) {
  * @return string Сообщение об ошибке
  */
 function validate_password($field) {
-    if (empty($_POST[$field])) {
+    $password = $_POST[$field];
+    if (empty($password)) {
         return 'Поле не заполнено';
     }
 
-    if (strlen($_POST[$field]) < 8) {
+    if (strlen($password) < 8) {
         return 'Поле должно содержать минимум 8 символов';
     }
 }
@@ -129,11 +132,12 @@ function validate_password($field) {
  * @return string Сообщение об ошибке
  */
 function validate_name($field) {
-    if (empty($_POST[$field])) {
+    $name = $_POST[$field];
+    if (empty($name)) {
         return 'Поле не заполнено';
     }
 
-    if (!preg_match('/[A-zА-яё-]/', $_POST[$field])) {
+    if (!preg_match('/[A-zА-яё-]/', $name)) {
         return 'Используйте только буквы';
     }
 }
