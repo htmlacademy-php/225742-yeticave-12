@@ -12,12 +12,19 @@ $title = 'Регистрация';
 $cats = get_cats($con);
 $content_data = ['cats' => $cats];
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $errors = validate_form($con);
+function filter_err ($field){
+        return !empty($field['error']);
+}
 
-    if (!empty($errors)) {
-        $content_data['errors'] = $errors;
-    } else if (save_user_data($con)) {
+function filter_values ($field) {
+    return !empty($field['value']);
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $data = validate_form($con);
+    if (array_filter($data, 'filter_err')) {
+        $content_data['errors'] = array_filter($data, 'filter_err');
+    } else if (save_user_data($con, array_filter($data, 'filter_values'))) {
         header('Location: pages/login.html'); //Временно
     }
 }

@@ -95,11 +95,11 @@ function check_existing_email($email, $con) {
  * @return string Сообщение об ошибке
  */
 function validate_email($con, $field) {
-    $validated_email = filter_input(INPUT_POST, $field, FILTER_VALIDATE_EMAIL);
-
-    if (empty($validated_email)) {
+    if (empty($POST[$field])) {
         return 'Поле не заполнено';
     }
+
+    $validated_email = filter_input(INPUT_POST, $field, FILTER_VALIDATE_EMAIL);
 
     if ($validated_email === false) {
         return 'Пожалуйста, введите корректный e-mail';
@@ -147,7 +147,7 @@ function validate_name($field) {
  * @return array Массив с сообщениями об ошибках
  */
 function validate_form($con) {
-    $errors = [];
+    $data = [];
     $rules = [
         'email' => function($con) {
             return validate_email($con, 'email');
@@ -189,9 +189,13 @@ function validate_form($con) {
     foreach ($_POST as $key => $value) {
         if (isset($rules[$key])) {
             $rule = $rules[$key];
-            $errors[$key] = $rule($con);
+            if ($rule($con)) {
+                $data[$key]['error'] = $rule($con);
+            } else {
+                $data[$key]['value'] = $_POST[$key];
+            }
         }
     }
 
-    return array_filter($errors);
+    return array_filter($data);
 }

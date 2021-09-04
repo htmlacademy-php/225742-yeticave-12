@@ -193,12 +193,12 @@ function get_post_val($key) {
     return $_POST[$key] ?? '';
 }
 
-function save_user_data($con) {
+function save_user_data($con, $data) {
     $date = date('Y-m-d H:i:s');
-    $email = $_POST['email'];
-    $name = $_POST['name'];
-    $password  = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    $contact = $_POST['message'];
+    $email = $data['email']['value'];
+    $name = $data['name']['value'];
+    $password  = password_hash($data['password']['value'], PASSWORD_DEFAULT);
+    $contact = $data['message']['value'];
 
     $query = 'INSERT INTO users (registration_date, email, name, password, contact) VALUES (?, ?, ?, ?, ?)';
     $stmt = mysqli_prepare($con, $query);
