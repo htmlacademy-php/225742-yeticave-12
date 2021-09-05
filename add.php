@@ -16,7 +16,7 @@ $content_data = ['cats' => $cats];
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $errors = validate_form();
+    $errors = validate_form($con);
     if (!empty($errors)) {
         $content_data['errors'] = $errors;
     } else if (add_new_lot($con, $_POST)) {

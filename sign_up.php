@@ -12,14 +12,6 @@ $title = 'Регистрация';
 $cats = get_cats($con);
 $content_data = ['cats' => $cats];
 
-function filter_err ($field){
-        return !empty($field['error']);
-}
-
-function filter_values ($field) {
-    return !empty($field['value']);
-}
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $data = validate_form($con);
     if (array_filter($data, 'filter_err')) {

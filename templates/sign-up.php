@@ -12,7 +12,7 @@
         <?php endif ?>
       </ul>
     </nav>
-    <form class="form container <?php if ($errors) :?> form--invalid <?php endif;?>" action="sign_up_controller.php" method="POST" autocomplete="off">
+    <form class="form container <?php if ($errors) :?> form--invalid <?php endif;?>" action="sign_up.php" method="POST" autocomplete="off">
       <h2>Регистрация нового аккаунта</h2>
       <div class="form__item <?php if ($errors['email']) :?> form__item--invalid <?php endif;?>">
         <label for="email">E-mail <sup>*</sup></label>
