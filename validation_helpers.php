@@ -6,11 +6,15 @@
  */
 function check_required_field($field)
 {
-    if (empty($_POST[$field])) {
-        return 'Поле не заполнено';
+    $result = [
+        'value' => $_POST[$field]
+    ];
+
+    if (empty($result['value'])) {
+       return 'Поле не заполнено';
     }
 
-    return true;
+    return $result;
 
 }
 
@@ -19,9 +23,9 @@ function check_required_field($field)
  * @param string Поле загрузки файла
  * @return string Сообщение об ошибке
  */
-function validate_image($image)
+function validate_image($form_image)
 {
-    $image = $_FILES[$image];
+    $image = $_FILES[$form_image];
     if ($image['error'] === 4) {
        return 'Добавьте изображение лота';
     }
@@ -35,8 +39,8 @@ function validate_image($image)
             return "Файл должен быть в формате jpeg или png";
         }
     }
-    return true;
 
+    return $image;
 }
 
 /**
@@ -46,21 +50,23 @@ function validate_image($image)
  */
 function validate_num($field)
 {
-    $validated_field = filter_input(INPUT_POST, $field, FILTER_VALIDATE_INT);
+    $result = [
+        'value' => filter_input(INPUT_POST, $field, FILTER_VALIDATE_INT)
+    ];
 
-    if (empty($validated_field)) {
+    if (is_null($result['value'])) {
         return 'Поле не заполнено';
     }
 
-    if ($validated_field === 0) {
+    if ($result['value'] === 0) {
         return 'Поле должно содержать значение больше ноля';
     }
 
-    if ($validated_field === false) {
+    if ($result['value'] === false) {
         return 'Следует использовать только цифры';
     }
 
-    return true;
+    return $result;
 
 }
 
@@ -71,20 +77,23 @@ function validate_num($field)
  */
 function validate_date($field)
 {
-    $date = $_POST[$field];
-    if (empty($date)) {
+    $result = [
+        'value' => $_POST[$field]
+    ];
+
+    if (empty($result['value'])) {
         return 'Поле не заполнено';
     }
 
-    if (!is_date_valid($date)) {
+    if (!is_date_valid($result['value'])) {
         return 'Введите дату в формате ДД:ММ:ГГ';
     }
 
-    if (strtotime($date) - time() < 0) {
+    if (strtotime($result['value']) - time() < 0) {
         return 'Торги должны длиться минимум 24 часа';
     }
 
-    return true;
+    return $result;
 
 }
 
@@ -112,21 +121,23 @@ function check_existing_email($email, $con)
  */
 function validate_email($con, $field)
 {
+    $result = [
+        'value' => filter_input(INPUT_POST, $field, FILTER_VALIDATE_EMAIL)
+    ];
+
     if (empty($_POST[$field])) {
         return 'Поле не заполнено';
     }
-    $validated_email = filter_input(INPUT_POST, $field, FILTER_VALIDATE_EMAIL);
 
-    if ($validated_email === false) {
+    if ($result['value'] === false) {
         return 'Пожалуйста, введите корректный e-mail';
     }
 
-    if (check_existing_email($validated_email, $con)) {
+    if (check_existing_email($result['value'], $con)) {
         return 'Указанный вами адрес электроннной почты уже занят';
     }
 
-    return true;
-
+    return $result;
 }
 
 /**
@@ -136,16 +147,19 @@ function validate_email($con, $field)
  */
 function validate_password($field)
 {
-    $password = $_POST[$field];
-    if (empty($password)) {
+    $result = [
+        'value' => $_POST[$field]
+    ];
+
+    if (empty($result['value'])) {
         return 'Поле не заполнено';
     }
 
-    if (strlen($password) < 8) {
+    if (strlen($result['value']) < 8) {
         return 'Поле должно содержать минимум 8 символов';
     }
 
-    return true;
+    return $result;
 }
 
 /**
@@ -155,16 +169,18 @@ function validate_password($field)
  */
 function validate_name($field)
 {
-    $name = $_POST[$field];
-    if (empty($name)) {
+    $result = [
+        'value' => $_POST[$field]
+    ];
+    if (empty($result['value'])) {
         return 'Поле не заполнено';
     }
 
-    if (!preg_match('/[A-zА-яё-]/', $name)) {
+    if (!preg_match('/([А-Я]{1}[а-яё]{1,23}|[A-Z]{1}[a-z]{1,23})$/', $result['value'])) {
         return 'Используйте только буквы';
     }
 
-    return true;
+    return $result;
 }
 
 /**
@@ -216,14 +232,26 @@ function validate_form($con)
         if (isset($rules[$key])) {
             $rule = $rules[$key];
             $check = $rule($con);
-            if ($check === true) {
-                $data[$key]['error'] = $check;
-                $data[$key]['value'] = $_POST[$key];
+            if (is_array($check)) {
+                $data[$key]['value'] = $check;
             } else {
                 $data[$key]['error'] = $check;
             }
         }
     }
+
+    foreach ($_FILES as $key => $value) {
+        if (isset($rules[$key])) {
+            $rule = $rules[$key];
+            $check = $rule();
+            if (is_array($check)) {
+                $data[$key]['value'] = $check;
+            } else {
+                $data[$key]['error'] = $check;
+            }
+        }
+    }
+
 
     return array_filter($data);
 }

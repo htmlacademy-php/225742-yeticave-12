@@ -16,13 +16,16 @@ $content_data = ['cats' => $cats];
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $errors = validate_form($con);
-    if (!empty($errors)) {
-        $content_data['errors'] = $errors;
-    } else if (add_new_lot($con, $_POST)) {
-        $success_url = 'lot.php?id=' . mysqli_insert_id($con);
+    $result = [
+        'value' => filter_input(INPUT_POST, $field, FILTER_VALIDATE_INT)
+    ];
+    $data = validate_form($con);
+    echo var_dump(empty($result['value']));
+    if (array_filter($data, 'filter_err')) {
+        $content_data['errors'] = array_filter($data, 'filter_err');
+    } else if (save_user_data($con, array_filter($data, 'filter_values'))) {
         header('Location:' . $success_url);
-        }
+    }
 };
 
 $content = include_template('add-lot.php', $content_data);

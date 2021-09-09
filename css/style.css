@@ -908,7 +908,7 @@ input:invalid .form__error{
   display: inline-block;
   width: 95px;
   box-sizing: border-box;
-  margin: 0 0 0 -4px;
+  margin: 0 0 0 0px;
   padding: 7px 0 8px 5px;
   border: 1px solid #fff;
   background: #fff;
