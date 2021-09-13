@@ -20,7 +20,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         'value' => filter_input(INPUT_POST, $field, FILTER_VALIDATE_INT)
     ];
     $data = validate_form($con);
-    echo var_dump(empty($result['value']));
     if (array_filter($data, 'filter_err')) {
         $content_data['errors'] = array_filter($data, 'filter_err');
     } else if (save_user_data($con, array_filter($data, 'filter_values'))) {

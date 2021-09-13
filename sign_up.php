@@ -14,7 +14,6 @@ $content_data = ['cats' => $cats];
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $data = validate_form($con);
-    echo var_dump($data);
     if (array_filter($data, 'filter_err')) {
         $content_data['errors'] = array_filter($data, 'filter_err');
     } else if (save_user_data($con, array_filter($data, 'filter_values'))) {
