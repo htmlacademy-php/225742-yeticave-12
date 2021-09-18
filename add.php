@@ -16,9 +16,6 @@ $content_data = ['cats' => $cats];
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $result = [
-        'value' => filter_input(INPUT_POST, $field, FILTER_VALIDATE_INT)
-    ];
     $data = validate_form($con);
     if (array_filter($data, 'filter_err')) {
         $content_data['errors'] = array_filter($data, 'filter_err');
