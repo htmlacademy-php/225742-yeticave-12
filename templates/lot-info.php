@@ -1,5 +1,5 @@
 <?php if (isset($_GET['id'])) :?>
-
+<main>
 <h2><?= htmlspecialchars($lot['name']); ?></h2>
       <div class="lot-item__content">
         <div class="lot-item__left">
@@ -97,4 +97,4 @@
         <!-- </div>
       </div> -->
     </section>
-
+</main>

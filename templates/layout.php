@@ -13,7 +13,6 @@
 
 <body>
     <div class="page-wrapper">
-
         <header class="main-header">
             <div class="main-header__container container">
                 <h1 class="visually-hidden">YetiCave</h1>
@@ -37,7 +36,7 @@
                     <?php else : ?>
                         <ul class="user-menu__list">
                             <li class="user-menu__item">
-                                <a href="#">Регистрация</a>
+                                <a href="sign_up.php">Регистрация</a>
                             </li>
                             <li class="user-menu__item">
                                 <a href="#">Вход</a>
@@ -47,10 +46,7 @@
                 </nav>
             </div>
         </header>
-
-        <main class="container">
             <?= $content; ?>
-        </main>
     </div>
 
     <footer class="main-footer">

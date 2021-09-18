@@ -19,7 +19,8 @@ function get_time_in_hours($date)
 {
     $timestamp = strtotime($date) / 60;
     $currentTimestamp = floor(time() / 60);
-    $lotTime = ['hours' => floor(($timestamp - $currentTimestamp) / 60), 'minutes' => ($timestamp - $currentTimestamp) % 60];
+    $lotTime = ['hours' => floor(($timestamp - $currentTimestamp) / 60),
+                'minutes' => ($timestamp - $currentTimestamp) % 60];
     return $lotTime;
 }
 
@@ -44,7 +45,8 @@ function get_connection()
  * @return boolean Флаг удачного/неудачного выполнения запроса
  */
 
-function check_con_result($con, $query) {
+function check_con_result($con, $query)
+{
     $result = mysqli_query($con, $query);
     if (!$result) {
         $error = mysqli_error($con);
@@ -80,7 +82,8 @@ function get_data($con, $query)
  * @param string Строка-апрос в БД
  * @return array Массив с полученными данными
  */
-function get_data_item($con, $query) {
+function get_data_item($con, $query)
+{
     $data = null;
     $result = check_con_result($con, $query);
     if ($result) {
@@ -150,134 +153,11 @@ function get_lot($con, $id)
 }
 
 /**
- * Проверяет поле на наличие значения
- * @param string Поле
- * @return string Сообщение об ошибке
- */
-function check_required_field($field) {
-    if (empty($_POST[$field])) {
-        return 'Поле не заполнено';
-    }
-}
-
-/**
- * Проверяет поле загрузки файла
- * @param string Поле загрузки файла
- * @return string Сообщение об ошибке
- */
-function validate_image($image) {
-    if ($_FILES[$image]['error'] == 4) {
-       return 'Добавьте изображение лота';
-    }
-
-    $image_name = $_FILES[$image]['tmp_name'];
-
-    if ($image_name) {
-        $image_mime = mime_content_type($image_name);
-
-        if ($image_mime !== 'image/jpeg' && $image_mime !== 'image/png') {
-            return "Файл должен быть в формате jpeg или png";
-        }
-    }
-}
-
-/**
- * Проверяет поле начальной цены
- * @param string Поле начальной цены
- * @return string Сообщение об ошибке
- */
-function validate_num($field) {
-    $validated_field = filter_input(INPUT_POST, $field, FILTER_VALIDATE_INT);
-
-    if (is_null($validated_field)) {
-        return 'Поле не заполнено';
-    }
-
-    if ($validated_field === 0) {
-        return 'Поле должно содержать значение больше ноля';
-    }
-
-    if ($validated_field === false) {
-        return 'Следует использовать только цифры';
-    }
-}
-
-
-/**
- * Проверяет поле даты окончания торгов
- * @param string Поле даты
- * @return string Сообщение об ошибке
- */
-function validate_date($field) {
-    if (empty($_POST[$field])) {
-        return 'Поле не заполнено';
-    }
-
-    if (!is_date_valid($_POST[$field])) {
-        return 'Введите дату в формате ДД:ММ:ГГ';
-    }
-    if (strtotime($_POST[$field]) - time() < 0) {
-        return 'Торги должны длиться минимум 24 часа';
-    }
-
-}
-
-/**
- * Осуществляет валидацию формы
- * @return array Массив с сообщениями об ошибках
- */
-function validate_form () {
-    $errors = [];
-    $rules = [
-        'lot-name' => function() {
-            return check_required_field('lot-name');
-        },
-
-        'message' => function() {
-            return check_required_field('message');
-        },
-
-        'lot-image' =>  function() {
-            return validate_image('lot-image');
-        },
-
-        'lot-rate' =>  function() {
-            return validate_num('lot-rate');
-        },
-
-        'lot-step' =>  function() {
-            return validate_num('lot-step');
-        },
-
-        'lot-date' =>  function() {
-            return validate_date('lot-date');
-        }
-    ];
-
-    foreach ($_POST as $key => $value) {
-        if (isset($rules[$key])) {
-            $rule = $rules[$key];
-            $errors[$key] = $rule();
-        }
-    }
-
-    foreach ($_FILES as $key => $value) {
-        if (isset($rules[$key])) {
-            $rule = $rules[$key];
-            $errors[$key] = $rule();
-        }
-    }
-
-
-    return array_filter($errors);
-
-}
-
-/**
  * Перемещает загруженное изображение в директорию проекта
  * @param string Поле файла
  */
-function move_file($file) {
+function move_file($file)
+{
     $file_ext = pathinfo($file['name'], PATHINFO_EXTENSION);
     $file_name = md5(microtime()) . '.' . $file_ext;
     $file_path = __DIR__ . '/uploads/';
@@ -286,7 +166,8 @@ function move_file($file) {
     return $file_url;
 }
 
-function add_new_lot($con, $data) {
+function add_new_lot($con, $data)
+{
     $lot_name = $data['lot-name'];
     $category = (int)$data['category'];
     $description = $data['message'];
@@ -294,7 +175,17 @@ function add_new_lot($con, $data) {
     $lot_step = (int)$data['lot-step'];
     $lot_date = $data['lot-date'];
     $lot_image = move_file($_FILES['lot-image']);
-    $sql = 'INSERT INTO lots (name, category_id, description, start_cost, step, termination_date, img_link) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    $sql = 'INSERT INTO lots (
+            name,
+            category_id,
+            description,
+            start_cost,
+            step,
+            termination_date,
+            img_link
+            )
+            VALUES
+            (?, ?, ?, ?, ?, ?, ?)';
     $stmt = mysqli_prepare($con, $sql);
     mysqli_stmt_bind_param($stmt, 'sisiiss', $lot_name, $category, $description, $lot_rate, $lot_step, $lot_date, $lot_image);
     $result = mysqli_stmt_execute($stmt);
@@ -302,7 +193,10 @@ function add_new_lot($con, $data) {
     if (!$result) {
         $error = mysqli_error($con);
         print("Ошибка MySQL: " . $error);
+        return false;
     }
+
+    return $result;
 }
 
 /**
@@ -310,6 +204,48 @@ function add_new_lot($con, $data) {
  * @param string Поле формы
  * @return string Значение поля
  */
-function get_post_val($key) {
+function get_post_val($key)
+{
     return $_POST[$key] ?? '';
+}
+
+function save_user_data($con, $data)
+{
+    $date = date('Y-m-d H:i:s');
+    $query = 'INSERT INTO users (
+            registration_date,
+            email,
+            name,
+            password,
+            contact)
+            VALUES (?, ?, ?, ?, ?)';
+    $stmt = mysqli_prepare($con, $query);
+    mysqli_stmt_bind_param(
+        $stmt,
+        'sssss',
+        $date,
+        $data['email']['value'],
+        $data['name']['value'],
+        password_hash($data['password']['value'], PASSWORD_DEFAULT),
+        $data['message']['value']
+    );
+        $result = mysqli_stmt_execute($stmt);
+
+    if (!$result) {
+        $error = mysqli_error($con);
+        print("Ошибка MySQL: " . $error);
+        return false;
+    }
+
+    return $result;
+}
+
+function filter_err ($field)
+{
+        return !empty($field['error']);
+}
+
+function filter_values ($field)
+{
+    return !empty($field['value']);
 }
