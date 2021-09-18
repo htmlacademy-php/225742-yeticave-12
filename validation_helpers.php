@@ -233,7 +233,7 @@ function validate_form($con)
             $rule = $rules[$key];
             $check = $rule($con);
             if (is_array($check)) {
-                $data[$key]['value'] = $check;
+                $data[$key]['value'] = $check['value'];
             } else {
                 $data[$key]['error'] = $check;
             }
