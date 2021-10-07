@@ -340,6 +340,41 @@ function validate_sign_in_form($con)
     return array_filter($data);
 }
 
+function validate_sign_up_form ($con)
+{
+    $data = [];
+    $rules = [
+        'email' => function($con) {
+            return validate_sign_up_email($con, 'email');
+        },
+
+        'password' => function() {
+            return validate_password('password');
+        },
+
+        'name' => function() {
+            return validate_name('name');
+        },
+
+        'message' => function() {
+            return check_required_field('message');
+        },
+    ];
+
+    foreach ($_POST as $key => $value) {
+        if (isset($rules[$key])) {
+            $rule = $rules[$key];
+            $check = $rule($con);
+            if (empty($check['error'])) {
+                $data[$key]['value'] = $check['value'];
+            } else {
+                $data[$key]['error'] = $check['error'];
+            }
+        }
+    }
+    return array_filter($data);
+}
+
 function check_existing_user($user_data) {
 
 }

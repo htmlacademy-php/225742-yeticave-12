@@ -13,8 +13,7 @@ $cats = get_cats($con);
 $content_data = ['cats' => $cats];
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $data = validate_form($con);
-    var_dump($data);
+    $data = validate_sign_up_form($con);
     if (array_filter($data, 'filter_err')) {
         $content_data['errors'] = array_filter($data, 'filter_err');
     } else if (save_user_data($con, array_filter($data, 'filter_values'))) {

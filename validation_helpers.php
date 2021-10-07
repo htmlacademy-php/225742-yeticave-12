@@ -132,7 +132,7 @@ function check_existing_email($email, $con)
  * @param string Адрес
  * @return string Сообщение об ошибке
  */
-function validate_email($con, $field)
+function validate_sign_up_email($con, $field)
 {
     $result = [
         'value' => filter_input(INPUT_POST, $field, FILTER_VALIDATE_EMAIL)
