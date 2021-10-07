@@ -1,8 +1,8 @@
 <?php
 
 require_once('helpers.php');
-require_once('functions.php');
 require_once('validation_helpers.php');
+require_once('functions.php');
 
 $is_auth = 1; //Временно
 $user_name = 'Михаил Данюшин';
@@ -16,10 +16,11 @@ $content_data = ['cats' => $cats];
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $data = validate_form($con);
+    $data = validate_add_lot_form($con);
+    var_dump(array_filter($data, 'filter_values'));
     if (array_filter($data, 'filter_err')) {
         $content_data['errors'] = array_filter($data, 'filter_err');
-    } else if (save_user_data($con, array_filter($data, 'filter_values'))) {
+    } else if (add_new_lot($con, array_filter($data, 'filter_values'))) {
         header('Location:' . $success_url);
     }
 };

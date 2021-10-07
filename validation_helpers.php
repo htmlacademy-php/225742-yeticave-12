@@ -11,7 +11,8 @@ function check_required_field($field)
     ];
 
     if (empty($result['value'])) {
-       return 'Поле не заполнено';
+       $result['error'] = 'Поле не заполнено';
+       return $result;
     }
 
     return $result;
@@ -25,22 +26,27 @@ function check_required_field($field)
  */
 function validate_image($form_image)
 {
-    $image = $_FILES[$form_image];
-    if ($image['error'] === 4) {
-       return 'Добавьте изображение лота';
+    $result = [
+        'value' => $_FILES[$form_image]
+    ];
+
+    if ($result['value']['error'] === 4) {
+       $result['error'] = 'Добавьте изображение лота';
+       return $result;
     }
 
-    $image_name = $image['tmp_name'];
+    $image_name = $result['value']['tmp_name'];
 
     if ($image_name) {
         $image_mime = mime_content_type($image_name);
 
         if ($image_mime !== 'image/jpeg' && $image_mime !== 'image/png') {
-            return "Файл должен быть в формате jpeg или png";
+            $result['error'] = "Файл должен быть в формате jpeg или png";
+            return $result;
         }
     }
 
-    return $image;
+    return $result;
 }
 
 /**
@@ -54,16 +60,20 @@ function validate_num($field)
         'value' => filter_input(INPUT_POST, $field, FILTER_VALIDATE_INT)
     ];
 
-    if (is_null($result['value'])) {
-        return 'Поле не заполнено';
+    if (empty($_POST[$field]) && $_POST[$field] !== '0') {
+        $result['error'] = 'Поле не заполнено';
+        return $result;
     }
 
     if ($result['value'] === 0) {
-        return 'Поле должно содержать значение больше ноля';
+        $result['error'] = 'Поле должно содержать значение больше ноля';
+        return $result;
     }
 
+
     if ($result['value'] === false) {
-        return 'Следует использовать только цифры';
+        $result['error'] = 'Следует использовать только цифры';
+        return $result;
     }
 
     return $result;
@@ -82,15 +92,18 @@ function validate_date($field)
     ];
 
     if (empty($result['value'])) {
-        return 'Поле не заполнено';
+        $result['error'] = 'Поле не заполнено';
+        return $result;
     }
 
     if (!is_date_valid($result['value'])) {
-        return 'Введите дату в формате ДД:ММ:ГГ';
+        $result['error'] = 'Введите дату в формате ДД:ММ:ГГ';
+        return $result;
     }
 
     if (strtotime($result['value']) - time() < 0) {
-        return 'Торги должны длиться минимум 24 часа';
+        $result['error'] = 'Торги должны длиться минимум 24 часа';
+        return $result;
     }
 
     return $result;
@@ -126,19 +139,23 @@ function validate_email($con, $field)
     ];
 
     if (empty($_POST[$field])) {
-        return 'Поле не заполнено';
+        $result['error'] = 'Поле не заполнено';
+        return $result;
     }
 
     if ($result['value'] === false) {
-        return 'Пожалуйста, введите корректный e-mail';
+        $result['error'] = 'Пожалуйста, введите корректный e-mail';
+        return $result;
     }
 
     if (check_existing_email($result['value'], $con)) {
-        return 'Указанный вами адрес электроннной почты уже занят';
+        $result['error'] = 'Указанный вами адрес электроннной почты уже занят';
+        return $result;
     }
 
     return $result;
 }
+
 
 /**
  * Проверяет введенное значение пароля при регистрации
@@ -152,11 +169,13 @@ function validate_password($field)
     ];
 
     if (empty($result['value'])) {
-        return 'Поле не заполнено';
+        $result['error'] =  'Поле не заполнено';
+        return $result;
     }
 
     if (strlen($result['value']) < 8) {
-        return 'Поле должно содержать минимум 8 символов';
+        $result['error'] =  'Поле должно содержать минимум 8 символов';
+        return $result;
     }
 
     return $result;
@@ -173,85 +192,15 @@ function validate_name($field)
         'value' => $_POST[$field]
     ];
     if (empty($result['value'])) {
-        return 'Поле не заполнено';
+        $result['error'] = 'Поле не заполнено';
+        return $result;
     }
 
     if (!preg_match('/([А-Я]{1}[а-яё]{1,23}|[A-Z]{1}[a-z]{1,23})$/', $result['value'])) {
-        return 'Используйте только буквы';
+        $result['error'] =  'Используйте только буквы';
+        return $result;
     }
 
     return $result;
 }
 
-/**
- * Осуществляет валидацию формы
- * @return array Массив с сообщениями об ошибках
- */
-function validate_form($con)
-{
-    $data = [];
-    $rules = [
-        'email' => function($con) {
-            return validate_email($con, 'email');
-        },
-
-        'password' => function() {
-            return validate_password('password');
-        },
-
-        'name' => function() {
-            return validate_name('name');
-        },
-
-        'lot-name' => function() {
-            return check_required_field('lot-name');
-        },
-
-        'message' => function() {
-            return check_required_field('message');
-        },
-
-        'lot-image' =>  function() {
-            return validate_image('lot-image');
-        },
-
-        'lot-rate' =>  function() {
-            return validate_num('lot-rate');
-        },
-
-        'lot-step' =>  function() {
-            return validate_num('lot-step');
-        },
-
-        'lot-date' =>  function() {
-            return validate_date('lot-date');
-        }
-    ];
-
-    foreach ($_POST as $key => $value) {
-        if (isset($rules[$key])) {
-            $rule = $rules[$key];
-            $check = $rule($con);
-            if (is_array($check)) {
-                $data[$key]['value'] = $check['value'];
-            } else {
-                $data[$key]['error'] = $check;
-            }
-        }
-    }
-
-    foreach ($_FILES as $key => $value) {
-        if (isset($rules[$key])) {
-            $rule = $rules[$key];
-            $check = $rule();
-            if (is_array($check)) {
-                $data[$key]['value'] = $check;
-            } else {
-                $data[$key]['error'] = $check;
-            }
-        }
-    }
-
-
-    return array_filter($data);
-}

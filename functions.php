@@ -168,12 +168,12 @@ function move_file($file)
 
 function add_new_lot($con, $data)
 {
-    $lot_name = $data['lot-name'];
-    $category = (int)$data['category'];
-    $description = $data['message'];
-    $lot_rate = (int)$data['lot-rate'];
-    $lot_step = (int)$data['lot-step'];
-    $lot_date = $data['lot-date'];
+    $lot_name = $data['lot-name']['value'];
+    $category = (int)$data['category']['value'];
+    $description = $data['message']['value'];
+    $lot_rate = (int)$data['lot-rate']['value'];
+    $lot_step = (int)$data['lot-step']['value'];
+    $lot_date = $data['lot-date']['value'];
     $lot_image = move_file($_FILES['lot-image']);
     $sql = 'INSERT INTO lots (
             name,
@@ -248,4 +248,98 @@ function filter_err ($field)
 function filter_values ($field)
 {
     return !empty($field['value']);
+}
+
+
+/**
+ * Осуществляет валидацию формы
+ * @return array Массив с сообщениями об ошибках
+ */
+function validate_add_lot_form($con)
+{
+    $data = [];
+    $rules = [
+
+        'lot-name' => function() {
+            return check_required_field('lot-name');
+        },
+
+        'message' => function() {
+            return check_required_field('message');
+        },
+
+        'lot-image' =>  function() {
+            return validate_image('lot-image');
+        },
+
+        'lot-rate' =>  function() {
+            return validate_num('lot-rate');
+        },
+
+        'lot-step' =>  function() {
+            return validate_num('lot-step');
+        },
+
+        'lot-date' =>  function() {
+            return validate_date('lot-date');
+        }
+    ];
+
+    foreach ($_POST as $key => $value) {
+        if (isset($rules[$key])) {
+            $rule = $rules[$key];
+            $check = $rule($con);
+            if (empty($check['error'])) {
+                $data[$key]['value'] = $check['value'];
+            } else {
+                $data[$key]['error'] = $check['error'];
+            }
+        }
+    }
+
+    foreach ($_FILES as $key => $value) {
+        if (isset($rules[$key])) {
+            $rule = $rules[$key];
+            $check = $rule();
+            if (empty($check['error'])) {
+                $data[$key]['value'] = $check['value'];
+            } else {
+                $data[$key]['error'] = $check['error'];
+            }
+        }
+    }
+
+
+    return array_filter($data);
+}
+
+function validate_sign_in_form($con)
+{
+    $data = [];
+    $rules = [
+        'email' => function($con) {
+            return validate_sign_in_email($con, 'email');
+        },
+
+        'password' => function() {
+            return validate_password('password');
+        },
+    ];
+
+    foreach ($_POST as $key => $value) {
+        if (isset($rules[$key])) {
+            $rule = $rules[$key];
+            $check = $rule($con);
+            if (empty($check['error'])) {
+                $data[$key]['value'] = $check['value'];
+            } else {
+                $data[$key]['error'] = $check['error'];
+            }
+        }
+    }
+    return array_filter($data);
+}
+
+function check_existing_user($user_data) {
+
 }
