@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (array_filter($data, 'filter_err')) {
         $content_data['errors'] = array_filter($data, 'filter_err');
     } else if (save_user_data($con, array_filter($data, 'filter_values'))) {
-        header('Location: pages/login.html'); //Временно
+        header('Location: sign-in.php'); //Временно
     }
 }
 

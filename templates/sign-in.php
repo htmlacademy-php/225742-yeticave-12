@@ -16,7 +16,7 @@
       <h2>Вход</h2>
       <div class="form__item <?php if ($errors['email']) :?> form__item--invalid  <?php endif;?> "> <!-- form__item--invalid -->
         <label for="email">E-mail <sup>*</sup></label>
-        <input id="email" type="text" name="email" placeholder="Введите e-mail">
+        <input id="email" type="text" name="email" value="<?= htmlspecialchars(get_post_val('email')); ?>" placeholder="Введите e-mail">
         <span class="form__error"><?php echo $errors['email']['error']?></span>
       </div>
       <div class="form__item form__item--last <?php if ($errors['password']) :?> form__item--invalid <?php endif;?>">

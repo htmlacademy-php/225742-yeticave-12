@@ -126,6 +126,7 @@ function check_existing_email($email, $con)
     return $is_exist;
 }
 
+
 /**
  * Проверяет введенное значение адреса электронной почты
  * @param boolean Ресурс соединения
@@ -156,6 +157,29 @@ function validate_sign_up_email($con, $field)
     return $result;
 }
 
+function validate_sign_in_email($con, $field)
+{
+    $result = [
+        'value' => filter_input(INPUT_POST, $field, FILTER_VALIDATE_EMAIL)
+    ];
+
+    if (empty($_POST[$field])) {
+        $result['error'] = 'Поле не заполнено';
+        return $result;
+    }
+
+    if ($result['value'] === false) {
+        $result['error'] = 'Пожалуйста, введите корректный e-mail';
+        return $result;
+    }
+
+    if (check_existing_email($result['value'], $con) === false) {
+        $result['error'] = 'Пользователя с таким адресом электронной почты нет';
+        return $result;
+    }
+
+    return $result;
+}
 
 /**
  * Проверяет введенное значение пароля при регистрации
@@ -181,6 +205,44 @@ function validate_password($field)
     return $result;
 }
 
+function check_user_password($password, $email, $con)
+{
+    $password_hash = password_hash($password, PASSWORD_DEFAULT);
+    $query = 'SELECT * from users WHERE email = "' . $email .  '" LIMIT 1';
+    $user = get_data_item($con, $query);
+    $user_password_hash = $user['password'];
+    $is_verified = false;
+    if (password_verify($password, $user_password_hash)) {
+        $is_verified = true;
+    }
+    return $is_verified;
+}
+
+
+function validate_sign_in_password($con, $field)
+{
+    $result = [
+        'value' => $_POST[$field]
+    ];
+
+    if (empty($result['value'])) {
+        $result['error'] =  'Поле не заполнено';
+        return $result;
+    }
+
+    if (strlen($result['value']) < 8) {
+        $result['error'] =  'Поле должно содержать минимум 8 символов';
+        return $result;
+    }
+
+    if (check_user_password($result['value'], $_POST['email'], $con) === false) {
+        $result['error'] =  'Неверный пароль';
+        return $result;
+    }
+
+    return $result;
+}
+
 /**
  * Проверяет введенное значение имени пользователя
  * @param string Введенное имя
@@ -191,6 +253,7 @@ function validate_name($field)
     $result = [
         'value' => $_POST[$field]
     ];
+
     if (empty($result['value'])) {
         $result['error'] = 'Поле не заполнено';
         return $result;

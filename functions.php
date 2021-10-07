@@ -56,11 +56,6 @@ function check_con_result($con, $query)
     return $result;
 }
 
-// function check_lot_exists($con, $item) {
-//     $query = 'SELECT '
-//     $result = check_con_result($con, $query);
-// }
-
 /**
  * Запрашивает данные из БД и возвращает их в виде двумерного массива
  * @param boolean Ресурс соединения
@@ -321,8 +316,8 @@ function validate_sign_in_form($con)
             return validate_sign_in_email($con, 'email');
         },
 
-        'password' => function() {
-            return validate_password('password');
+        'password' => function($con) {
+            return validate_sign_in_password($con, 'password');
         },
     ];
 
@@ -373,8 +368,4 @@ function validate_sign_up_form ($con)
         }
     }
     return array_filter($data);
-}
-
-function check_existing_user($user_data) {
-
 }
