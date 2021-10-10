@@ -245,6 +245,22 @@ function filter_values ($field)
     return !empty($field['value']);
 }
 
+function check_rules($rules, $data)
+{
+    foreach ($_POST as $key => $value) {
+        if (isset($rules[$key])) {
+            $rule = $rules[$key];
+            $check = $rule($con);
+            if (empty($check['error'])) {
+                $data[$key]['value'] = $check['value'];
+            } else {
+                $data[$key]['error'] = $check['error'];
+            }
+        }
+    }
+
+    return $data;
+}
 
 /**
  * Осуществляет валидацию формы
@@ -252,7 +268,6 @@ function filter_values ($field)
  */
 function validate_add_lot_form($con)
 {
-    $data = [];
     $rules = [
 
         'lot-name' => function() {
@@ -280,17 +295,7 @@ function validate_add_lot_form($con)
         }
     ];
 
-    foreach ($_POST as $key => $value) {
-        if (isset($rules[$key])) {
-            $rule = $rules[$key];
-            $check = $rule($con);
-            if (empty($check['error'])) {
-                $data[$key]['value'] = $check['value'];
-            } else {
-                $data[$key]['error'] = $check['error'];
-            }
-        }
-    }
+    $data = check_rules($rules, $data, $with_files);
 
     foreach ($_FILES as $key => $value) {
         if (isset($rules[$key])) {
@@ -304,13 +309,11 @@ function validate_add_lot_form($con)
         }
     }
 
-
     return array_filter($data);
 }
 
 function validate_sign_in_form($con)
 {
-    $data = [];
     $rules = [
         'email' => function($con) {
             return validate_sign_in_email($con, 'email');
@@ -321,23 +324,12 @@ function validate_sign_in_form($con)
         },
     ];
 
-    foreach ($_POST as $key => $value) {
-        if (isset($rules[$key])) {
-            $rule = $rules[$key];
-            $check = $rule($con);
-            if (empty($check['error'])) {
-                $data[$key]['value'] = $check['value'];
-            } else {
-                $data[$key]['error'] = $check['error'];
-            }
-        }
-    }
+    $data = check_rules($rules, $data);
     return array_filter($data);
 }
 
 function validate_sign_up_form ($con)
 {
-    $data = [];
     $rules = [
         'email' => function($con) {
             return validate_sign_up_email($con, 'email');
@@ -356,16 +348,6 @@ function validate_sign_up_form ($con)
         },
     ];
 
-    foreach ($_POST as $key => $value) {
-        if (isset($rules[$key])) {
-            $rule = $rules[$key];
-            $check = $rule($con);
-            if (empty($check['error'])) {
-                $data[$key]['value'] = $check['value'];
-            } else {
-                $data[$key]['error'] = $check['error'];
-            }
-        }
-    }
+    $data = check_rules($rules, $data);
     return array_filter($data);
 }
