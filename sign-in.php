@@ -7,21 +7,25 @@ require_once('validation_helpers.php');
 $is_auth = 0; //Временно
 $user_name = 'Михаил Данюшин';
 $con = get_connection();
-$title = 'Регистрация';
+$title = 'Вход';
 
 $cats = get_cats($con);
 $content_data = ['cats' => $cats];
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $data = validate_sign_up_form($con);
+    $data = validate_sign_in_form($con);
+    var_dump($data);
     if (array_filter($data, 'filter_err')) {
         $content_data['errors'] = array_filter($data, 'filter_err');
-    } else if (save_user_data($con, array_filter($data, 'filter_values'))) {
-        header('Location: sign-in.php'); //Временно
+    } else {
+        // session_start();
+        // $_SESSION['username'] = get_user($con, $_POST['email']);
+        // var_dump($_SESSION);
+        echo ('1');
     }
 }
 
-$content = include_template('sign-up.php', $content_data);
+$content = include_template('sign-in.php', $content_data);
 $layout_data = ['content' => $content,
                 'title' => $title,
                 'cats' => $cats,

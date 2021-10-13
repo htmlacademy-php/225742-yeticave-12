@@ -39,7 +39,7 @@
                                 <a href="sign_up.php">Регистрация</a>
                             </li>
                             <li class="user-menu__item">
-                                <a href="#">Вход</a>
+                                <a href="sign-in.php">Вход</a>
                             </li>
                         </ul>
                     <?php endif; ?>
