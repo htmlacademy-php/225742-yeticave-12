@@ -295,7 +295,7 @@ function validate_add_lot_form($con)
         }
     ];
 
-    $data = check_rules($rules, $data, $with_files);
+    $data = check_rules($rules, $data, $con);
 
     foreach ($_FILES as $key => $value) {
         if (isset($rules[$key])) {
@@ -324,7 +324,7 @@ function validate_sign_in_form($con)
         },
     ];
 
-    $data = check_rules($rules, $data);
+    $data = check_rules($rules, $data, $con);
     return array_filter($data);
 }
 
@@ -348,6 +348,12 @@ function validate_sign_up_form ($con)
         },
     ];
 
-    $data = check_rules($rules, $data);
+    $data = check_rules($rules, $data, $con);
     return array_filter($data);
+}
+
+function get_user ($con, $email) {
+    $query = 'SELECT * from users WHERE email = "' . $email .  '" LIMIT 1';
+    $user = get_data_item($con, $query);
+    return user['name'];
 }

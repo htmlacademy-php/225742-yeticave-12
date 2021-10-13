@@ -173,7 +173,7 @@ function validate_sign_in_email($con, $field)
         return $result;
     }
 
-    if (check_existing_email($result['value'], $con) === false) {
+    if (check_existing_email($result['value'], $con)) {
         $result['error'] = 'Пользователя с таким адресом электронной почты нет';
         return $result;
     }
