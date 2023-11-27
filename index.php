@@ -1,15 +1,28 @@
 <?php
+/**
+ * @var $categories array Категории лотов
+ * @var $com mysqli Ресурс соединения
+ */
 
-require_once('helpers.php');
-require_once('functions.php');
-$con = get_connection();
-$cats = get_cats($con);
+require_once 'init.php';
+$is_auth = rand(0, 1);
+$user_name = ''; // укажите здесь ваше имя
+
 $lots = get_lots($con);
 
-$is_auth =  rand(0, 1);
-$user_name = 'Михаил Данюшин';
-$title = 'YetiCave || Главная';
+$page_content = include_template('main.php', Array(
+    'categories' => $categories,
+    'lots' => $lots
+));
 
-$content = include_template('main.php', ['cats' => $cats, 'lots' => $lots]);
-$layout_content = include_template('layout.php', ['is_auth' => $is_auth, 'content' => $content, 'title' => $title, 'user_name' => $user_name, 'cats' => $cats]);
-print($layout_content);
+$layout = [
+    'title' => 'Главная',
+    'categories' => $categories,
+    'content' => $page_content,
+    'user' => $user
+];
+
+$page = include_template('layout.php', $layout);
+?>
+
+<?=$page?>

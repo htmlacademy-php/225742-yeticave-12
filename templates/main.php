@@ -1,18 +1,13 @@
-<main class="container">
 <section class="promo">
     <h2 class="promo__title">Нужен стафф для катки?</h2>
     <p class="promo__text">На нашем интернет-аукционе ты найдёшь самое эксклюзивное сноубордическое и горнолыжное снаряжение.</p>
     <ul class="promo__list">
-        <?php if ($cats == null) :?> {
-            <p> Данные не получены</p>
-            }
-        <?php else :?>
-            <?php foreach ($cats as $cat) :?>
-            <li class="promo__item promo__item--<?= $cat['code']; ?>">
-                <a class="promo__link" href="pages/all-lots.html"><?= htmlspecialchars($cat['category']); ?></a>
+        <?php foreach ($categories as $key => $val): ?>
+
+            <li class="promo__item promo__item--<?=$val["code"]?>">
+                <a class="promo__link" href="pages/all-lots.html"><?=$val["name"]?></a>
             </li>
-            <?php endforeach;?>
-        <?php endif ?>
+        <?php endforeach;?>
     </ul>
 </section>
 <section class="lots">
@@ -20,38 +15,29 @@
         <h2>Открытые лоты</h2>
     </div>
     <ul class="lots__list">
-        <?php if ($lots == null) :?> {
-            <p> Данные не получены</p>
-            }
-        <?php else : ?>
-            <?php foreach ($lots as $lot) :?>
-                <li class="lots__item lot">
-                    <div class="lot__image">
-                        <img src="<?= htmlspecialchars($lot['img_link']); ?>" width="350" height="260" alt="<?= htmlspecialchars($lot['name']); ?>">
-                    </div>
-                    <div class="lot__info">
-                        <span class="lot__category"><?= htmlspecialchars($lot['category']); ?></span>
-                        <h3 class="lot__title">
-                            <a class="text-link" href="lot.php?id=<?=$lot['id']; ?>"><?= htmlspecialchars($lot['name']); ?></a></h3>
-                        <div class="lot__state">
-                            <div class="lot__rate">
-                                <span class="lot__amount">Стартовая цена</span>
-                                <span class="lot__cost"><?= htmlspecialchars(get_cost($lot['start_cost'])); ?></span>
-                            </div>
-                            <?php if (get_time_in_hours($lot['termination_date'])['hours'] <= 1) :?>
-                                <div class="lot__timer timer timer--finishing">
-                                    <?= implode(': ', get_time_in_hours($lot['termination_date'])); ?>
-                                </div>
-                            <?php else : ?>
-                                <div class="lot__timer timer">
-                                    <?= implode(': ', get_time_in_hours($lot['termination_date'])); ?>
-                                </div>
-                            <?php endif ?>
+        <!--заполните этот список из массива с товарами-->
+        <?php foreach ($lots as $key => $val): ?>
+        <?php $formatted_time = format_time($val['completion_date']) ?>
+            <li class="lots__item lot">
+                <div class="lot__image">
+                    <img src="<?=htmlspecialchars($val['image_url'])?>" width="350" height="260" alt="<?=htmlspecialchars($val['title']) ?? ''?>">
+                </div>
+                <div class="lot__info">
+                    <span class="lot__category"><?=htmlspecialchars($val['category']) ?? ''?></span>
+                    <h3 class="lot__title">
+                        <a class="text-link" href="lot.php?id=<?=$val['id']?>"><?=htmlspecialchars($val['title']) ?? ''?></a>
+                    </h3>
+                    <div class="lot__state">
+                        <div class="lot__rate">
+                            <span class="lot__amount"></span>
+                            <span class="lot__cost"><?=htmlspecialchars(format_cost($val['initial_cost']))?></span>
+                        </div>
+                        <div class="lot__timer timer">
+                            <?=$formatted_time[0]?> : <?=$formatted_time[1]?>
                         </div>
                     </div>
-                </li>
-            <?php endforeach;?>
-        <?php endif  ?>
+                </div>
+            </li>
+        <?php endforeach;?>
     </ul>
 </section>
-</main>

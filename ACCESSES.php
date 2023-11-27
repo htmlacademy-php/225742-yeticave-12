@@ -1,10 +1,9 @@
 <?php
-
 $con_params = [
     'host' => '127.0.0.1',
     'user' => 'root',
-    'password' => '',
-    'db_name' => 'yeticave'
+    'password' => '78vitefe',
+    'db_name' => 'yeti'
 ];
 
 return $con_params;

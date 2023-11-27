@@ -247,6 +247,14 @@ main.container {
   color: #727b7f;
 }
 
+.main-header .button {
+  height: 40px;
+  padding: 0;
+  min-width: 130px;
+  display: inline-grid;
+  place-items: center;
+}
+
 /**/
 
 .user-menu {
@@ -864,12 +872,6 @@ input:invalid .form__error{
   display: block;
 }
 
-.form__item--invalid  .form__error--image {
-  display: inline-block;
-  margin-left: 15px;
-}
-
-
 .form__item--invalid textarea,
 .form__item--invalid input {
   background: #ffffff url("../img/error.svg") 97% 11px no-repeat;
@@ -908,7 +910,7 @@ input:invalid .form__error{
   display: inline-block;
   width: 95px;
   box-sizing: border-box;
-  margin: 0 0 0 0px;
+  margin: 0 0 0 -4px;
   padding: 7px 0 8px 5px;
   border: 1px solid #fff;
   background: #fff;
@@ -916,7 +918,7 @@ input:invalid .form__error{
   cursor: pointer;
 }
 
-.form__input-file label:hover  {
+.form__input-file:hover label {
   background-color: #45abde;
   color: #fff;
 }

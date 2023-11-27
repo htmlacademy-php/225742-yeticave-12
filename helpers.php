@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Проверяет переданную дату на соответствие формату 'ГГГГ-ММ-ДД'
  *
@@ -16,8 +17,14 @@
 function is_date_valid(string $date) : bool {
     $format_to_check = 'Y-m-d';
     $dateTimeObj = date_create_from_format($format_to_check, $date);
+    return $dateTimeObj !== false && !date_get_last_errors();
+}
 
-    return $dateTimeObj !== false && array_sum(date_get_last_errors()) === 0;
+function get_mime_type(Array $file): string {
+    $file_info = finfo_open(FILEINFO_MIME_TYPE);
+    $file_name = $file['tmp_name'];
+
+    return finfo_file($file_info, $file_name);
 }
 
 /**
@@ -128,9 +135,10 @@ function get_noun_plural_form (int $number, string $one, string $two, string $ma
  */
 function include_template($name, array $data = []) {
     $name = 'templates/' . $name;
+    $result = '';
 
     if (!is_readable($name)) {
-        return '';
+        return $result;
     }
 
     ob_start();
@@ -141,4 +149,113 @@ function include_template($name, array $data = []) {
 
     return $result;
 }
-?>
+
+/**
+ * Форматирует цену
+ * @param int|float $cost Цена
+ * @return string Отформатированная цена
+ */
+function format_cost($cost): string {
+    $normalized_cost = ceil($cost);
+    $formatted_cost = $normalized_cost < 1000 ? $normalized_cost : number_format($normalized_cost, 0, '', ' ');
+    return $formatted_cost . ' ₽';
+}
+
+function format_time($deadline)  {
+    $now = time();
+    $deadline_ts = strtotime($deadline);
+    $hours_number = floor(($deadline_ts - $now) / 3600);
+    $minutes_number = floor((($deadline_ts - $now) % 3600) / 60);
+    $formatted_hours = $hours_number < 10 ? str_pad($hours_number, 2, "0", STR_PAD_LEFT) : $hours_number;
+    $formatted_minutes = $minutes_number < 10 ? str_pad($minutes_number, 2, "0", STR_PAD_LEFT) : $minutes_number;
+
+    return array($formatted_hours, $formatted_minutes);
+}
+
+/**
+ * Сохраняет файл на сервере
+ * @param array $file Элемент из $_FILES
+ * @param string $dir_name Название директории, в которую следует переместить файл
+ * @return string $url Путь до файла
+ */
+function save_file($file, $dir_name = 'uploads') {
+    $name = $file['name'];
+    $path = __DIR__ . '/' .$dir_name. '/';
+    $url = '/' . $dir_name . '/' . $name;
+
+    move_uploaded_file($file['tmp_name'], $path . $name);
+    return $url;
+}
+
+/**
+ * Выполняет sql-запрос, возвращающий данные в виде ассоциативного массива
+ *
+ * @param $con mysqli Ресурс соединения
+ * @param $query string SQL запроc
+ *
+ * @return Array Массив с данными
+ */
+function get_data(mysqli $con, string $query):Array {
+    $res = mysqli_query($con, $query);
+    return mysqli_fetch_all($res, MYSQLI_ASSOC);
+};
+
+/**
+ * Возвращает данные конкретного лота
+ * @param $id int айдишник лота
+ * @return array Данные лота
+ */
+function get_lot(int $id, mysqli $con):Array | null {
+    $query = '
+        SELECT
+            l.id,
+            title,
+            name AS category,
+            description,
+            image_url,
+            initial_cost,
+            completion_date,
+            creation_date
+        FROM lots l
+        JOIN categories c
+                ON c.id = l.category_id 
+                WHERE l.id = '.$id.'
+    ';
+
+    $res = mysqli_query($con, $query);
+    return mysqli_fetch_assoc($res);
+};
+
+/**
+ * Возвращает все активные лоты из БД
+ * @return Array Массив с лотами
+ */
+function get_lots(mysqli $con):Array {
+    $now = date('Y-m-d H:m:s');
+    $query = "
+        SELECT 
+            l.id,
+            name AS category,
+            title,
+            description,
+            image_url,
+            initial_cost,
+            completion_date,
+            creation_date
+        FROM lots l
+            JOIN categories c
+                ON c.id = l.category_id 
+        WHERE completion_date > '$now'
+        ORDER BY creation_date DESC";
+    return get_data($con, $query);
+};
+
+/**
+ * Возвращает категории лотов из БД
+ * @return Array Массив с категориями
+ */
+function get_categories(mysqli $con):Array {
+    $query = 'SELECT * from categories';
+    return get_data($con, $query);
+};
+

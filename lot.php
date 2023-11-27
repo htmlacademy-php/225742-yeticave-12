@@ -1,26 +1,39 @@
 <?php
+/**
+ * @var $con mysqli - Ресурс соединения
+ * @var $categories array - Категории из БД
+ */
 
-require_once('helpers.php');
-require_once('functions.php');
+require_once 'init.php';
 
-$is_auth =  rand(0, 1);
-$user_name = 'Михаил Данюшин';
-$con = get_connection();
+$lot_id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT) ?? '';
 
-$cats = get_cats($con);
-
-if (isset($_GET['id']) && !empty($_GET['id'])) {
-    $lot = get_lot($con, $_GET['id']);
-    if ($lot) {
-        $content = include_template('lot-info.php', ['cats' => $cats, 'lot' => $lot]);
-        $title = 'YetiCave || ' . $lot['name'] . '';
-    } else {
-        $content = include_template('404.php');
-        $title = 'YetiCave || Страницы не существует';
-    }
+$lot = null;
+if (!$lot_id) {
+    http_response_code(404);
+    header('Location: 404.php');
+    die;
 } else {
-    $content = include_template('404.php');
-    $title = 'YetiCave || Страницы не существует';
+    $lot = get_lot(intval($lot_id), $con);
 }
-$layout_content = include_template('layout.php', ['is_auth' => $is_auth, 'content' => $content, 'title' => $title, 'user_name' => $user_name, 'cats' => $cats]);
-print($layout_content);
+
+if (!$lot) {
+    header('Location: 404.php');
+    exit();
+}
+
+$page_content = include_template('lot.php', Array(
+    'lot' => $lot,
+    'categories' => $categories,
+));
+
+$layout = [
+    'title' => 'Главная',
+    'categories' => $categories,
+    'content' => $page_content
+];
+
+$page = include_template('layout.php', $layout);
+?>
+
+<?=$page?>
